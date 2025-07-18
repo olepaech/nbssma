@@ -23,6 +23,7 @@ path <- load_participant_files()
 data <- readxl::read_excel(path)
 shaded_plot(data)
 }
+
 }
 \author{
 Ole Paech

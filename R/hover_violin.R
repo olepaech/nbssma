@@ -19,7 +19,7 @@
 #' @importFrom dplyr select all_of mutate across everything filter group_by summarise left_join
 #' @importFrom stringr str_replace_all
 #' @importFrom tidyr pivot_longer
-#' @importFrom stats quantile median min max
+#' @importFrom stats quantile median
 #' @importFrom plotly plot_ly add_trace layout
 #' @export
 hover_violin <- function(data) {
