@@ -15,6 +15,16 @@
 #' }
 #'
 #' @author Ole Paech
+#'
+#' @importFrom dplyr select all_of mutate across filter group_by summarise ungroup
+#' @importFrom tidyr pivot_longer complete
+#' @importFrom stringr str_replace_all
+#' @importFrom ggplot2 ggplot geom_bar geom_text scale_fill_manual labs theme_minimal position_dodge element_text
+#' @importFrom plotly ggplotly layout
+#' @importFrom stats median
+#' @importFrom lubridate dmy today
+#' @importFrom tibble tibble
+#'
 #' @export
 grouped_histogram <- function(data) {
   suppressWarnings({

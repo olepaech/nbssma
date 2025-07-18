@@ -18,6 +18,14 @@
 #' }
 #'
 #' @author Ole Paech
+#'
+#' @importFrom dplyr select all_of mutate across filter group_by summarise left_join ungroup
+#' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_replace_all
+#' @importFrom stats median quantile
+#' @importFrom ggplot2 ggplot aes geom_boxplot facet_wrap labs theme_minimal theme element_blank element_text
+#' @importFrom plotly ggplotly
+#'
 #' @export
 boxplot_categories <- function(data, category) {
   category_map <- list(

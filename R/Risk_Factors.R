@@ -17,6 +17,11 @@
 #' risk_factors(data)
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr mutate across select starts_with arrange group_by ungroup summarise
+#' @importFrom ggplot2 ggplot aes geom_rect geom_hline geom_point annotate scale_fill_manual scale_y_continuous theme_minimal labs theme element_text element_blank
+#' @importFrom plotly ggplotly
+#'
 #' @export
 risk_factors <- function(df){
   suppressWarnings({

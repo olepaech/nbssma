@@ -19,6 +19,14 @@
 #' }
 #'
 #' @author Ole Paech
+#'
+#' @importFrom dplyr select all_of mutate across filter group_by summarise
+#' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_replace_all
+#' @importFrom plotly plot_ly layout
+#' @importFrom stats median quantile
+#' @importFrom modeest mfv
+#'
 #' @export
 group_bar_categroy <- function(data, category) {
   suppressWarnings({

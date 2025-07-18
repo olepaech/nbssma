@@ -21,6 +21,15 @@
 #' }
 #'
 #' @author Ole Paech
+#'
+#' @importFrom dplyr select all_of mutate across filter group_by summarise
+#' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_replace_all
+#' @importFrom ggplot2 ggplot aes geom_tile facet_wrap scale_fill_gradient theme_minimal labs theme element_text
+#' @importFrom plotly ggplotly
+#' @importFrom stats median
+#' @importFrom grid unit
+#'
 #' @export
 heatmap_all_categories <- function(data, category1, category2) {
   category_map <- list(

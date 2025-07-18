@@ -20,6 +20,16 @@
 #' spiderplot_category(data, category = "Profession")
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate across all_of filter group_by summarise bind_rows
+#' @importFrom stringr str_replace_all
+#' @importFrom tidyr pivot_longer pivot_wider
+#' @importFrom stats median
+#' @importFrom tibble column_to_rownames
+#' @importFrom fmsb radarchart
+#' @importFrom grDevices rainbow
+#' @importFrom graphics legend
+#'
 #' @export
 spiderplot_category <- function(data, category, Min = 1, Max = 4){
   suppressWarnings({

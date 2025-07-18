@@ -17,6 +17,17 @@
 #' risk_share_bars(file_paths, type = "Downside")  #Development of Downside Risks
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @importFrom readxl read_excel
+#' @importFrom dplyr mutate select across group_by summarise ungroup
+#' @importFrom purrr map2_dfr
+#' @importFrom stringr str_replace_all str_remove
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot aes geom_col scale_y_continuous scale_fill_manual labs theme_minimal theme element_text
+#' @importFrom scales percent_format
+#' @importFrom stats setNames
+#' @importFrom plotly ggplotly
+#'
 #' @export
 risk_share_bars <- function(file_paths_named_list, type = "Upside") {
   importance_map <- c(

@@ -20,6 +20,15 @@
 #'
 #' @author Ole Paech
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr mutate select across bind_rows group_by summarise arrange ungroup filter left_join
+#' @importFrom stringr str_replace_all
+#' @importFrom readxl read_excel
+#' @importFrom tidyr pivot_longer
+#' @importFrom ggplot2 ggplot geom_rect aes geom_line geom_point geom_text scale_x_continuous scale_y_continuous scale_fill_manual labs theme_minimal theme element_text
+#' @importFrom plotly ggplotly
+#' @importFrom stats na.omit
+#'
 #' @export
 inflation_risk_history <- function(files_with_labels) {
   suppressWarnings({

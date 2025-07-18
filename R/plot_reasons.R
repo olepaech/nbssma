@@ -16,6 +16,13 @@
 #' table_reasons(data)
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @importFrom purrr map2_dfr
+#' @importFrom tibble tibble
+#' @importFrom dplyr filter group_by mutate row_number ungroup
+#' @importFrom tidyr pivot_wider
+#' @importFrom gridExtra grid.table
+#'
 #' @export
 table_reasons <- function(df) {
   rate_cols <- names(df)[c(10, 12, 14, 16)]

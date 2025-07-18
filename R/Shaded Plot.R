@@ -16,6 +16,16 @@
 #' data <- readxl::read_excel(path)
 #' shaded_plot(data)
 #' }
+#'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate across everything filter group_by summarise arrange row_number select
+#' @importFrom stringr str_replace_all
+#' @importFrom tidyr pivot_longer
+#' @importFrom stats median quantile
+#' @importFrom lubridate parse_date_time
+#' @importFrom plotly plot_ly add_trace layout
+#'
+#' @export
 shaded_plot <- function(data) {
   suppressWarnings({
     relevant_cols <- names(data)[c(10,12,14,16)]

@@ -22,6 +22,13 @@
 #' plots[[4]]  # Show Long-Run Plot
 #' }
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select mutate across filter group_by summarise rename arrange ungroup
+#' @importFrom tidyselect all_of
+#' @importFrom stringr str_replace_all
+#' @importFrom tidyr pivot_longer
+#' @importFrom plotly plot_ly layout
+#'
 #' @export
 plot_3d <- function(data) {
   relevant_cols <- names(data)[c(10,12,14,16)]

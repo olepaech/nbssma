@@ -18,6 +18,13 @@
 #' }
 #'
 #' @author Ole Paech
+#'
+#' @importFrom dplyr select all_of mutate across filter
+#' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_replace_all
+#' @importFrom ggplot2 ggplot aes geom_jitter theme_minimal labs theme element_text element_blank
+#' @importFrom plotly ggplotly
+#'
 #' @export
 dotplot <- function(data, category) {
   category_map <- list(

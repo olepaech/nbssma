@@ -14,6 +14,16 @@
 #' }
 #'
 #' @author Ole Paech
+#'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select all_of mutate across everything
+#' @importFrom stringr str_replace_all
+#' @importFrom purrr map2_dfr
+#' @importFrom tibble tibble
+#' @importFrom stats median quantile
+#' @importFrom modeest mfv
+#' @importFrom plotly plot_ly layout
+#'
 #' @export
 hover_barplot <- function(data){
   relevant_cols <- names(data)[c(10, 12, 14, 16)]

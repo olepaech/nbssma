@@ -15,6 +15,13 @@
 #'
 #' @author Ole Paech
 #'
+#' @importFrom magrittr %>%
+#' @importFrom dplyr select all_of mutate across everything filter group_by summarise ungroup
+#' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_replace_all
+#' @importFrom plotly plot_ly add_trace layout
+#' @importFrom stats quantile median
+#'
 #' @export
 hover_boxplot <- function(data) {
   relevant_cols <- names(data)[c(10, 12, 14, 16)]
