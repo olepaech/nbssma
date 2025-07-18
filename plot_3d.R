@@ -1,60 +1,81 @@
-library(readxl)
-library(dplyr)
-library(stringr)
-library(tidyr)
-library(plotly)
-
-path <- load_participant_files("Jul 25")
-data <- read_excel(path)
-
+#' 3D Visualization of Median Inflation Expectations
+#'
+#' This function creates interactive 3D scatter plots of median and mean inflation expectations
+#' by profession, experience level, and nationality across different months.
+#'
+#' The function is intended to process SMA survey data in wide format and create
+#' one 3D plot per observed month.
+#'
+#' @param data A data frame with variables including profession, experience, nationality,
+#'   and inflation expectation columns.
+#'
+#' @return A list of interactive plotly 3D scatter plots, one for each month.
+#'
+#' @author Ole Paech
+#'
+#' @examples
+#' \dontrun{
+#' path <- load_participant_files()
+#' data <- readxl::read_excel(path)
+#' plots <- plot_3d(data)
+#' plots[[1]]  # Show first months plot
+#' plots[[4]]  # Show Long-Run Plot
+#' }
+#'
+#' @export
 plot_3d <- function(data) {
   relevant_cols <- names(data)[c(10,12,14,16)]
-  
+
   data_clean <- data %>%
-    select(`What is your profession?`, 
-           `How many years of expertise do you have?`, 
-           `What is your nationality?`, 
-           all_of(relevant_cols)) %>%
-    mutate(across(all_of(relevant_cols), ~ str_replace_all(., "%", "") %>%
-                    str_replace_all(",", ".") %>%
-                    as.numeric()))
+    dplyr::select(`What is your profession?`,
+                  `How many years of expertise do you have?`,
+                  `What is your nationality?`,
+                  tidyselect::all_of(relevant_cols)) %>%
+    dplyr::mutate(dplyr::across(tidyselect::all_of(relevant_cols),
+                                ~ stringr::str_replace_all(., "%", "") %>%
+                                  stringr::str_replace_all(",", ".") %>%
+                                  as.numeric()))
+
   data_long <- data_clean %>%
-    pivot_longer(cols = all_of(relevant_cols), names_to = "Question", values_to = "Value") %>%
-    filter(!is.na(Value)) %>%
-    mutate(Month = extract_label(Question))
+    tidyr::pivot_longer(cols = tidyselect::all_of(relevant_cols),
+                        names_to = "Question", values_to = "Value") %>%
+    dplyr::filter(!is.na(Value)) %>%
+    dplyr::mutate(Month = extract_label(Question))
+
   month_levels <- unique(data_long$Month)[order(match(unique(data_long$Month), extract_label(relevant_cols)))]
+
   data_long <- data_long %>%
-    mutate(Month = factor(Month, levels = month_levels))
-  
+    dplyr::mutate(Month = factor(Month, levels = month_levels))
+
   agg_data <- data_long %>%
-    group_by(
-      `What is your profession?`, 
-      `How many years of expertise do you have?`, 
-      `What is your nationality?`, 
+    dplyr::group_by(
+      `What is your profession?`,
+      `How many years of expertise do you have?`,
+      `What is your nationality?`,
       Month
     ) %>%
-    summarise(
+    dplyr::summarise(
       Median_Expectation = median(Value, na.rm = TRUE),
       Mean_Expectation = mean(Value, na.rm = TRUE),
       .groups = "drop"
     ) %>%
-    rename(
+    dplyr::rename(
       Profession = `What is your profession?`,
       Experience = `How many years of expertise do you have?`,
       Nationality = `What is your nationality?`
     ) %>%
-    mutate(
+    dplyr::mutate(
       Experience = factor(Experience, levels = c("0 - 5 years", "5 - 15 years", "over 15 years")),
       Nationality = factor(Nationality, levels = c("Slovak", "Non-Slovak")),
       Profession = factor(Profession)
     )
-  
+
   monthly_data <- split(agg_data, agg_data$Month)
-  
+
   plots <- lapply(names(monthly_data), function(month_name) {
     month_data <- monthly_data[[month_name]]
-    
-    plot_ly(
+
+    plotly::plot_ly(
       month_data,
       x = ~Nationality,
       y = ~Experience,
@@ -76,7 +97,7 @@ plot_3d <- function(data) {
       ),
       hoverinfo = "text"
     ) %>%
-      layout(
+      plotly::layout(
         title = paste("3D Median Expectations –", month_name),
         scene = list(
           xaxis = list(title = "Nationality"),
@@ -85,7 +106,6 @@ plot_3d <- function(data) {
         )
       )
   })
-  
+
   return(plots)
 }
-
