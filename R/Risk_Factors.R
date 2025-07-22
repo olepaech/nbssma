@@ -28,11 +28,14 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-risk_factors <- function(df, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27), xlab = "", ylab = "Average Inflation Expectation", title = ""){
+risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29), xlab = "", ylab = "Average Inflation Expectation", title = ""){
   suppressWarnings({
     inflation_col <- names(df)[infl_col]
     risks_1 <- names(df)[upside_col]
     risks_2 <- names(df)[downside_col]
+
+    risks_1 <- gsub("2", "", risks_1)
+    risks_2 <- gsub("2", "", risks_2)
 
     mapping <- c(
       "Absolutely no relevance" = 0,
@@ -61,11 +64,11 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:21), downside_c
     df_plot <- data.frame(
       Variable = c(paste0("Upside_", risks_1), paste0("Downside_", risks_2)),
       Value = c(risk1_means, -risk2_means),
-      Group = c(rep("S–W", length(risks_1)), rep("X–AB", length(risks_2)))
+      Group = c(rep("Q-V", length(risks_1)), rep("X–AC", length(risks_2)))
     )
 
-    farben <- c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e",
-                "#a6761d", "#666666", "#e6ab02", "#1f78b4", "#b2df8a")
+    farben <- c("#1C355E", "#CCE1EE", "#74253E", "#00594F", "#D15F27","white",
+                "#1C355E", "#c7932c", "#74253E", "#CCE1EE", "#A2A9AD", "white")
     df_plot$Variable <- factor(df_plot$Variable, levels = c(paste0("Upside_", risks_1), paste0("Downside_", risks_2)))
 
     df_plot <- df_plot %>%
@@ -79,14 +82,14 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:21), downside_c
       dplyr::mutate(
         ymin = inflation_value + ymin,
         ymax = inflation_value + ymax,
-        x = ifelse(Group == "S–W", "Upside Risks", "Downside Risks")
+        x = ifelse(Group == "Q-V", "Upside Risks", "Downside Risks")
       ) %>%
       dplyr::group_by(Group) %>%
       dplyr::mutate(share = round(abs(Value) / sum(abs(Value)) * 100, 1)) %>%
       dplyr::ungroup()
 
-    total_upside <- round(sum(df_plot$Value[df_plot$Group == "S–W"]), 2)
-    total_downside <- round(sum(abs(df_plot$Value[df_plot$Group == "X–AB"])), 2)
+    total_upside <- round(sum(df_plot$Value[df_plot$Group == "Q-V"]), 2)
+    total_downside <- round(sum(abs(df_plot$Value[df_plot$Group == "X–AC"])), 2)
 
     p <- ggplot2::ggplot(df_plot, ggplot2::aes(x = x, ymin = ymin, ymax = ymax, fill = Variable,
                                                text = paste0(Variable, ": ", share, "%"))) +
@@ -97,13 +100,13 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:21), downside_c
                           color = "transparent") +
       ggplot2::annotate("text",
                         x = 1,
-                        y = max(df_plot$ymax[df_plot$Group == "S–W"]) + 0.5,
-                        label = paste0("Upside Risk: ", total_upside),
+                        y = max(df_plot$ymax[df_plot$Group == "Q–V"]) + 0.5,
+                        label = paste0("Upside Risk"),
                         size = 4, fontface = "bold", hjust = 0.5) +
       ggplot2::annotate("text",
                         x = 1,
-                        y = min(df_plot$ymin[df_plot$Group == "X–AB"]) - 2.2,
-                        label = paste0("Downside Risk: ", total_downside),
+                        y = min(df_plot$ymin[df_plot$Group == "X–AC"]) - 2.2,
+                        label = paste0("Downside Risk"),
                         size = 4, fontface = "bold", hjust = 0.5) +
       ggplot2::scale_fill_manual(values = farben) +
       ggplot2::scale_y_continuous(name = ylab,

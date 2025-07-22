@@ -21,8 +21,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' files <- prepare_file_list(c("May 25", "Jun 25"), infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27))
-#' inflation_risk_history(files)
+#' files <- prepare_file_list(c("May 25", "Jun 25"))
+#' inflation_risk_history(files, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27))
 #' }
 #'
 #' @author Ole Paech
@@ -37,7 +37,7 @@
 #' @importFrom stats na.omit
 #'
 #' @export
-inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27), xlab = "", ylab = "Average Inflation Expectations (in %)",  title = "Development of Inflation Projections and percieved Risks") {
+inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29), xlab = "", ylab = "Average Inflation Expectations (in %)",  title = "Development of Inflation Projections and percieved Risks") {
   suppressWarnings({
     suppressMessages({
       importance_map <- c(
@@ -59,7 +59,7 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
                               as.numeric()
         ) %>%
           dplyr::select(Inflation, upside_col,downside_col) %>%
-          dplyr::mutate(dplyr::across(2:11, ~ importance_map[.])) %>%
+          dplyr::mutate(dplyr::across(2:13, ~ importance_map[.])) %>%
           dplyr::mutate(Source = label)
 
         return(df)
@@ -79,8 +79,8 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         dplyr::group_by(Source) %>%
         dplyr::summarise(
           inflation_exp = mean(Inflation, na.rm = TRUE),
-          dplyr::across(2:6, ~ mean(., na.rm = TRUE), .names = "Upside_{.col}"),
-          dplyr::across(7:11, ~ mean(., na.rm = TRUE), .names = "Downside_{.col}")
+          dplyr::across(2:7, ~ mean(., na.rm = TRUE), .names = "Upside_{.col}"),
+          dplyr::across(8:13, ~ mean(., na.rm = TRUE), .names = "Downside_{.col}")
         )
 
       upside <- summary_data %>%

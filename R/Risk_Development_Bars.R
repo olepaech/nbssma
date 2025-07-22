@@ -33,7 +33,7 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27), xlab = "Survey Date") {
+risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29), xlab = "Survey Date") {
   importance_map <- c(
     "Absolutely no relevance" = 0,
     "Not so Important" = 1,

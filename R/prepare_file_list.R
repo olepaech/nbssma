@@ -14,7 +14,7 @@
 #' @author Ole Paech
 #' @return A named character vector of existing file paths, excluding any missing files.
 #' @export
-prepare_file_list <- function(month_labels = c("May 25", "Jun 25")) {
+prepare_file_list <- function(month_labels = NULL) {
   month_files <- purrr::set_names(
     purrr::map(month_labels, load_risk_files),
     month_labels
