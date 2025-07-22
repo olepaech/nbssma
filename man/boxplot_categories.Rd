@@ -4,13 +4,28 @@
 \alias{boxplot_categories}
 \title{Create facetted boxplots grouped by respondent category}
 \usage{
-boxplot_categories(data, category)
+boxplot_categories(
+  data,
+  category,
+  rel_cols = c(10, 12, 14),
+  xlab = "",
+  ylab = "Rate (in \%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing survey results.}
 
 \item{category}{A string indicating the grouping category. Must be one of
 \code{"Profession"}, \code{"Experience"}, or \code{"Nationality"}.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A Plotly object containing facetted boxplots by month and category.
@@ -24,7 +39,7 @@ across different time periods.
 \dontrun{
   path <- load_participant_files()
   data <- readxl::read_excel(path)
-  boxplot_categories(data, category = "Profession")
+  boxplot_categories(data, category = "Profession", rel_cols = c(10,12,14), title = "Boxplots based on Profession")
 }
 
 }

@@ -4,13 +4,25 @@
 \alias{group_bar_categroy}
 \title{Grouped Bar Plot by Category with Median, Mean and Mode}
 \usage{
-group_bar_categroy(data, category)
+group_bar_categroy(
+  data,
+  category,
+  rel_cols = c(10, 12, 14),
+  ylab = "Median Rate (in \%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing the survey data.}
 
 \item{category}{A character string specifying the category to group by.
 Must be one of \code{"Profession"}, \code{"Experience"}, or \code{"Nationality"}.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A Plotly bar plot object.
@@ -24,7 +36,7 @@ showing Median, Mean and Mode of survey values by a respondent category
 \dontrun{
   path <- load_participant_files()
   data <- readxl::read_excel(path)
-  group_bar_categroy(data, category = "Profession")
+  group_bar_categroy(data, category = "Profession", rel_cols = c(10,12,14))
 }
 
 }

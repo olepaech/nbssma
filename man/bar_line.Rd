@@ -4,10 +4,21 @@
 \alias{bar_line}
 \title{Create a bar and line plot showing median and IQR over time}
 \usage{
-bar_line(data)
+bar_line(
+  data,
+  rel_cols = c(10, 12, 14),
+  title1 = "Median (left)",
+  title2 = "Interquartile Range (right)"
+)
 }
 \arguments{
 \item{data}{A data.frame with the survey data.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{title1}{A character string specifying the title of the left y-axis (optional).}
+
+\item{title2}{A character string specifying the title of the right y-axis (optional)..}
 }
 \value{
 A Plotly object with dual-axis bar and line chart.
@@ -18,7 +29,7 @@ Create a bar and line plot showing median and IQR over time
 \examples{
 path <- load_participant_files(subfolder = "Current")
 data <- readxl::read_excel(path)
-bar_line(data)
+bar_line(data, rel_cols = c(10,12,14), title1 = "Median (left)", title2 = "Interquartile Range (right)")
 
 }
 \author{

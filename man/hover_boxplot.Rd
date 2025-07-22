@@ -4,10 +4,24 @@
 \alias{hover_boxplot}
 \title{Interactive Boxplot for DFR expectations}
 \usage{
-hover_boxplot(data)
+hover_boxplot(
+  data,
+  rel_cols = c(10, 12, 14),
+  xlab = "",
+  ylab = "Median Rate (in \%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing survey responses.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A \code{plotly} interactive boxplot object.
@@ -19,7 +33,7 @@ Generates a Plotly boxplot with median and percentile statistics for NBS survey 
 \dontrun{
 path <- load_participant_files()
 data <- readxl::read_excel(path)
-hover_boxplot(data)
+hover_boxplot(data, rel_cols = c(10,12,14))
 }
 
 }

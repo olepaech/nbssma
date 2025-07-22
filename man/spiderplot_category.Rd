@@ -4,7 +4,14 @@
 \alias{spiderplot_category}
 \title{Create a Radar Chart of Median Expectations by Category}
 \usage{
-spiderplot_category(data, category, Min = 1, Max = 4)
+spiderplot_category(
+  data,
+  category,
+  Min = 1,
+  Max = 4,
+  rel_cols = c(10, 12, 14),
+  show_title = FALSE
+)
 }
 \arguments{
 \item{data}{A data frame with participant survey responses.}
@@ -15,6 +22,10 @@ Must be one of "Profession", "Experience", or "Nationality".}
 \item{Min}{Numeric value for the minimum axis limit of the radar plot. Default is 1.}
 
 \item{Max}{Numeric value for the maximum axis limit of the radar plot. Default is 4.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{show_title}{A logical value indicating whether to display a title above the radar chart. Defaults to FALSE. Set to TRUE to add a title.}
 }
 \value{
 A radar chart visualizing the median inflation expectations by group.

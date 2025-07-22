@@ -4,10 +4,24 @@
 \alias{grouped_histogram}
 \title{Grouped Histogram Plot of Expected Rates by Month}
 \usage{
-grouped_histogram(data)
+grouped_histogram(
+  data,
+  rel_cols = c(10, 12, 14),
+  xlab = "Expected Rate",
+  ylab = "Percentage (\%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{Data frame containing the survey responses.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A plotly interactive histogram plot.

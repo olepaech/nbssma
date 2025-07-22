@@ -4,12 +4,27 @@
 \alias{risk_share_bars}
 \title{Create an Interactive Risk Share Bar-plot (Upside or Downside)}
 \usage{
-risk_share_bars(file_paths_named_list, type = "Upside")
+risk_share_bars(
+  file_paths_named_list,
+  type = "Upside",
+  infl_col = c(16),
+  upside_col = c(17:21),
+  downside_col = c(23:27),
+  xlab = "Survey Date"
+)
 }
 \arguments{
 \item{file_paths_named_list}{Named list of Excel file paths.}
 
 \item{type}{Character string specifying risk type: either "Upside" (default) or "Downside".}
+
+\item{infl_col}{A vector stating in which column of the file the inflation data are.}
+
+\item{upside_col}{A vector stating in which columns of the file the upside risk data are.}
+
+\item{downside_col}{A vector stating in which columns of the file the downside risk data are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
 }
 \value{
 A \code{plotly} interactive bar plot showing risk share distribution over time.

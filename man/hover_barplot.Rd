@@ -4,10 +4,24 @@
 \alias{hover_barplot}
 \title{Create interactive bar chart of DFR expectations}
 \usage{
-hover_barplot(data)
+hover_barplot(
+  data,
+  rel_cols = c(10, 12, 14),
+  xlab = "",
+  ylab = "Median Rate (in \%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing survey responses.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A \code{plotly} interactive barplot object.

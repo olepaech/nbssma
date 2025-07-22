@@ -4,10 +4,14 @@
 \alias{table_reasons}
 \title{Display Open-Ended DFR-Expectation Reasons in a Table}
 \usage{
-table_reasons(df)
+table_reasons(df, rate_col = c(10, 12, 14), text_col = c(11, 13, 15))
 }
 \arguments{
 \item{df}{A data frame containing at least 4 pairs of numeric rate and corresponding text columns.}
+
+\item{rate_col}{A vector stating in which columns of the file the expected DFR data are.}
+
+\item{text_col}{A vector stating in which columns of the file the explanations for DFR expectations are.}
 }
 \value{
 A rendered table object showing the textual responses by question.

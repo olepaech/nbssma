@@ -4,11 +4,31 @@
 \alias{inflation_risk_history}
 \title{Visualize Historical Inflation Risk Perception}
 \usage{
-inflation_risk_history(files_with_labels)
+inflation_risk_history(
+  files_with_labels,
+  infl_col = c(16),
+  upside_col = c(17:21),
+  downside_col = c(23:27),
+  xlab = "",
+  ylab = "Average Inflation Expectations (in \%)",
+  title = "Development of Inflation Projections and percieved Risks"
+)
 }
 \arguments{
 \item{files_with_labels}{A chronological named list, where each element is the path
 to an Excel file and the name is the corresponding survey date label.}
+
+\item{infl_col}{A vector stating in which column of the file the inflation data are.}
+
+\item{upside_col}{A vector stating in which columns of the file the upside risk data are.}
+
+\item{downside_col}{A vector stating in which columns of the file the downside risk data are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 An interactive plotly object visualizing the inflation expectation
@@ -21,7 +41,7 @@ in relation to inflation expectations using a stacked bar plot.
 }
 \examples{
 \dontrun{
-files <- prepare_file_list(c("May 25", "Jun 25"))
+files <- prepare_file_list(c("May 25", "Jun 25"), infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27))
 inflation_risk_history(files)
 }
 

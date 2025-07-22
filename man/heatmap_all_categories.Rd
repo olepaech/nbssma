@@ -4,7 +4,13 @@
 \alias{heatmap_all_categories}
 \title{Heatmap of Median Expectations by Two Categories}
 \usage{
-heatmap_all_categories(data, category1, category2)
+heatmap_all_categories(
+  data,
+  category1,
+  category2,
+  rel_cols = c(10, 12, 14),
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing survey data.}
@@ -14,6 +20,10 @@ Must be one of \code{"Profession"}, \code{"Experience"}, or \code{"Nationality"}
 
 \item{category2}{A character string specifying the second category (y-Axis).
 Must be one of \code{"Profession"}, \code{"Experience"}, or \code{"Nationality"}.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A \code{plotly} interactive heatmap object.
@@ -27,7 +37,7 @@ and over months.
 \dontrun{
 path <- load_participant_files()
 data <- readxl::read_excel(path)
-heatmap_all_categories(data, "Experience", "Profession")
+heatmap_all_categories(data, "Experience", "Profession", rel_cols = c(10,12,14))
 }
 
 }

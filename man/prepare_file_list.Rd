@@ -13,7 +13,8 @@ prepare_file_list(month_labels = c("May 25", "Jun 25"))
 A named character vector of existing file paths, excluding any missing files.
 }
 \description{
-Creates a single named list of file paths.
+Creates a single named list of file paths. This function is makes the creation of the "files_with_labels" for
+the function "inflation_risk_history" more convenient.
 }
 \examples{
 \dontrun{

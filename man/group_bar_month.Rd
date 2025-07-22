@@ -4,13 +4,25 @@
 \alias{group_bar_month}
 \title{Grouped Bar Plot by Month with Summary Statistics}
 \usage{
-group_bar_month(data, category)
+group_bar_month(
+  data,
+  category,
+  rel_cols = c(10, 12, 14),
+  ylab = "Median Rate (in \%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing the survey data.}
 
 \item{category}{A character string specifying the category to group by.
 Must be one of \code{"Profession"}, \code{"Experience"}, or \code{"Nationality"}.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A Plotly bar plot object.
@@ -24,7 +36,7 @@ a respondent category (profession, experience, or nationality).
 \dontrun{
   path <- load_participant_files()
   data <- readxl::read_excel(path)
-  group_bar_month(data, category = "Profession")
+  group_bar_month(data, category = "Profession", title = "Bars per month for Profession")
 }
 
 }

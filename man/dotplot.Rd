@@ -4,13 +4,28 @@
 \alias{dotplot}
 \title{Create a jittered dotplot of rates by month and category}
 \usage{
-dotplot(data, category)
+dotplot(
+  data,
+  category,
+  rel_cols = c(10, 12, 14),
+  xlab = "",
+  ylab = "Rate (in \%)",
+  title = ""
+)
 }
 \arguments{
 \item{data}{A data frame containing survey data.}
 
 \item{category}{A string indicating the grouping category. Must be one of
 \code{"Profession"}, \code{"Experience"}, or \code{"Nationality"}.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
+
+\item{xlab}{A character string specifying the x-axis label (optional).}
+
+\item{ylab}{A character string specifying the y-axis label (optional).}
+
+\item{title}{A character string specifying the title of the graph (optional).}
 }
 \value{
 A Plotly interactive plot object.
@@ -24,7 +39,7 @@ respondent category (profession, experience, or nationality)
 \dontrun{
   path <- load_participant_files()
   data <- readxl::read_excel(path)
-  dotplot(data, category = "Experience")
+  dotplot(data, category = "Experience", rel_cols = c(10,12,14))
 }
 
 }

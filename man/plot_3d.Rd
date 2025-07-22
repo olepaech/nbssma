@@ -4,11 +4,13 @@
 \alias{plot_3d}
 \title{3D Visualization of Median Inflation Expectations}
 \usage{
-plot_3d(data)
+plot_3d(data, rel_cols = c(10, 12, 14))
 }
 \arguments{
 \item{data}{A data frame with variables including profession, experience, nationality,
 and inflation expectation columns.}
+
+\item{rel_cols}{A vector stating in which columns of the file the data to visualize are.}
 }
 \value{
 A list of interactive plotly 3D scatter plots, one for each month.
@@ -27,7 +29,7 @@ path <- load_participant_files()
 data <- readxl::read_excel(path)
 plots <- plot_3d(data)
 plots[[1]]  # Show first months plot
-plots[[4]]  # Show Long-Run Plot
+plots[[3]]  # Show Long-Run Plot
 }
 
 }
