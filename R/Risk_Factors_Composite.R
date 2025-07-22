@@ -18,7 +18,7 @@
 #' \dontrun{
 #' path <- load_participant_files()
 #' data <- readxl::read_excel(path)
-#' risk_factors_composite(data)
+#' aggregate_risk_factors(data)
 #' }
 #'
 #' @importFrom magrittr %>%
@@ -27,7 +27,7 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-risk_factors_composite <- function(df, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27),
+aggregate_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27),
                          xlab = "", ylab = "Average Inflation Expectation", title = "") {
   suppressWarnings({
     inflation_col <- names(df)[infl_col]
