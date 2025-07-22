@@ -7,6 +7,10 @@
 #' @param data A data frame containing survey data.
 #' @param category A string indicating the grouping category. Must be one of
 #'   `"Profession"`, `"Experience"`, or `"Nationality"`.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A Plotly interactive plot object.
 #'
@@ -14,7 +18,7 @@
 #' \dontrun{
 #'   path <- load_participant_files()
 #'   data <- readxl::read_excel(path)
-#'   dotplot(data, category = "Experience")
+#'   dotplot(data, category = "Experience", rel_cols = c(10,12,14))
 #' }
 #'
 #' @author Ole Paech
@@ -26,7 +30,7 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-dotplot <- function(data, category) {
+dotplot <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (in %)", title = "") {
   category_map <- list(
     "Profession" = "What is your profession?",
     "Experience" = "How many years of expertise do you have?",
@@ -38,7 +42,7 @@ dotplot <- function(data, category) {
   }
 
   category_col <- category_map[[category]]
-  relevant_cols <- names(data)[c(10, 12, 14, 16)]
+  relevant_cols <- names(data)[rel_cols]
 
   data_clean <- data |>
     dplyr::select(dplyr::all_of(category_col), dplyr::all_of(relevant_cols)) |>
@@ -57,6 +61,7 @@ dotplot <- function(data, category) {
       values_to = "Rate"
     ) |>
     dplyr::filter(!is.na(Rate)) |>
+    dplyr::filter(!is.na(.data[[category_col]]), .data[[category_col]] != "") |>
     dplyr::mutate(Month = extract_label(Question))
 
   month_levels <- unique(data_long$Month)[
@@ -78,7 +83,7 @@ dotplot <- function(data, category) {
     ggplot2::geom_jitter(width = 0.2, height = 0.02, size = 3, alpha = 0.8) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
-      x = "", y = "Rate (in %)",
+      x = xlab, y = ylab, title = title,
       color = category
     ) +
     ggplot2::theme(

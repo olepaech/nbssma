@@ -3,6 +3,10 @@
 #' Generates a Plotly bar chart with median, mode, and percentile statistics for NBS survey data.
 #'
 #' @param data A data frame containing survey responses.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A `plotly` interactive barplot object.
 #'
@@ -25,8 +29,8 @@
 #' @importFrom plotly plot_ly layout
 #'
 #' @export
-hover_barplot <- function(data){
-  relevant_cols <- names(data)[c(10, 12, 14, 16)]
+hover_barplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab =  "Median Rate (in %)", title = ""){
+  relevant_cols <- names(data)[rel_cols]
   month_labels <- extract_label(relevant_cols)
   data_numeric <- data %>%
     dplyr::select(dplyr::all_of(relevant_cols)) %>%
@@ -67,8 +71,9 @@ hover_barplot <- function(data){
     textposition = 'none'
   ) %>%
     plotly::layout(
-      yaxis = list(title = "Median Rate (in %)"),
-      xaxis = list(title = "", categoryorder = "array", categoryarray = month_labels)
+      yaxis = list(title = ylab),
+      xaxis = list(title = xlab, categoryorder = "array", categoryarray = month_labels),
+      title = title
     )
 
   fig

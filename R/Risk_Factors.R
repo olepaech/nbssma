@@ -3,8 +3,13 @@
 #' This function takes a data frame from SMA survey results and creates an interactive bar plot
 #' showing average and weighted upside and downside risk factors alongside inflation expectation.
 #'
-#' @param df A data frame containing survey data. The 18th column should be inflation data,
-#'   columns 19-23 upside risk factors, and columns 24-28 downside risk factors.
+#' @param df A data frame containing survey data.
+#' @param infl_col A vector stating in which column of the file the inflation data are.
+#' @param upside_col A vector stating in which columns of the file the upside risk data are.
+#' @param downside_col A vector stating in which columns of the file the downside risk data are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A \code{plotly} interactive bar plot.
 #'
@@ -23,18 +28,18 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-risk_factors <- function(df){
+risk_factors <- function(df, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27), xlab = "", ylab = "Average Inflation Expectation", title = ""){
   suppressWarnings({
-    inflation_col <- names(df)[18]
-    risks_1 <- names(df)[19:23]
-    risks_2 <- names(df)[24:28]
+    inflation_col <- names(df)[infl_col]
+    risks_1 <- names(df)[upside_col]
+    risks_2 <- names(df)[downside_col]
 
     mapping <- c(
       "Absolutely no relevance" = 0,
-      "Not so Important" = 1,
-      "Moderate" = 2,
-      "Important" = 3,
-      "Very Important" = 4
+      "Not so Important" = 0.5,
+      "Moderate" = 1.0,
+      "Important" = 1.5,
+      "Very Important" = 2.0
     )
 
     df_clean <- df %>%
@@ -92,18 +97,23 @@ risk_factors <- function(df){
                           color = "transparent") +
       ggplot2::annotate("text",
                         x = 1,
-                        y = max(df_plot$ymax[df_plot$Group == "S–W"]) + 1.5,
+                        y = max(df_plot$ymax[df_plot$Group == "S–W"]) + 0.5,
                         label = paste0("Upside Risk: ", total_upside),
                         size = 4, fontface = "bold", hjust = 0.5) +
       ggplot2::annotate("text",
                         x = 1,
-                        y = min(df_plot$ymin[df_plot$Group == "X–AB"]) - 5.0,
+                        y = min(df_plot$ymin[df_plot$Group == "X–AB"]) - 2.2,
                         label = paste0("Downside Risk: ", total_downside),
                         size = 4, fontface = "bold", hjust = 0.5) +
       ggplot2::scale_fill_manual(values = farben) +
-      ggplot2::scale_y_continuous(name = "Average Inflation Expectation") +
+      ggplot2::scale_y_continuous(name = ylab,
+                                  breaks = seq(
+                                    floor(min(df_plot$ymin, na.rm = TRUE)),
+                                    ceiling(max(df_plot$ymax, na.rm = TRUE)),
+                                    by = 0.5
+                                    )) +
       ggplot2::theme_minimal() +
-      ggplot2::labs(x = NULL) +
+      ggplot2::labs(x = xlab, title = title) +
       ggplot2::theme(
         axis.text.x = ggplot2::element_blank(),
         axis.ticks.x = ggplot2::element_blank(),

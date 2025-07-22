@@ -10,13 +10,13 @@
 #' @export
 refresh_quarto <- function(indicator = NULL, open = TRUE, background_job = FALSE) {
   if (is.null(indicator)) {
-    quarto::quarto_render("C:/Users/olepa/OneDrive/Desktop/NBS/Survey of Monetary Analysis", as_job = background_job) |>
+    quarto::quarto_render("O:/OMP/a_IR_survey/Survey of Monetary Analysis", as_job = background_job) |>
       suppressMessages()
   } else {
 
     indicator <- tolower(indicator)
 
-    path <- "C:/Users/olepa/OneDrive/Desktop/NBS/Survey of Monetary Analysis"
+    path <- "O:/OMP/a_IR_survey/Survey of Monetary Analysis"
     file <- paste0(path, "/", indicator, ".qmd")
     exists <- file.exists(file)
 
@@ -32,6 +32,6 @@ refresh_quarto <- function(indicator = NULL, open = TRUE, background_job = FALSE
   }
 
   if (open) {
-    browseURL("C:/Users/olepa/OneDrive/Desktop/NBS/Survey of Monetary Analysis/_site/index.html")
+    browseURL("O:/OMP/a_IR_survey/Survey of Monetary Analysis/_site/index.html")
   }
 }

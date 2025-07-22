@@ -3,6 +3,10 @@
 #' Creates grouped histograms of expected rates over months with medians highlighted.
 #'
 #' @param data Data frame containing the survey responses.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A plotly interactive histogram plot.
 #'
@@ -26,9 +30,9 @@
 #' @importFrom tibble tibble
 #'
 #' @export
-grouped_histogram <- function(data) {
+grouped_histogram <- function(data, rel_cols = c(10,12,14), xlab = "Expected Rate", ylab = "Percentage (%)", title = "" ) {
   suppressWarnings({
-    relevant_cols <- names(data)[c(10, 12, 14, 16)]
+    relevant_cols <- names(data)[rel_cols]
 
     data_clean <- data |>
       dplyr::select(dplyr::all_of(relevant_cols)) |>
@@ -136,7 +140,7 @@ grouped_histogram <- function(data) {
                          color = Colors,
                          show.legend = FALSE) +
       ggplot2::scale_fill_manual(values = Colors, labels = months_sorted) +
-      ggplot2::labs(x = "Expected Rate", y = "Percentage (%)", fill = "Month") +
+      ggplot2::labs(x = xlab, y = ylab, title = title, fill = "Month") +
       ggplot2::theme_minimal(base_size = 14)
 
     plotly::ggplotly(p, tooltip = "text") |>

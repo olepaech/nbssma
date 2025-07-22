@@ -8,6 +8,7 @@
 #'
 #' @param data A data frame with variables including profession, experience, nationality,
 #'   and inflation expectation columns.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
 #'
 #' @return A list of interactive plotly 3D scatter plots, one for each month.
 #'
@@ -19,7 +20,7 @@
 #' data <- readxl::read_excel(path)
 #' plots <- plot_3d(data)
 #' plots[[1]]  # Show first months plot
-#' plots[[4]]  # Show Long-Run Plot
+#' plots[[3]]  # Show Long-Run Plot
 #' }
 #'
 #' @importFrom magrittr %>%
@@ -30,8 +31,8 @@
 #' @importFrom plotly plot_ly layout
 #'
 #' @export
-plot_3d <- function(data) {
-  relevant_cols <- names(data)[c(10,12,14,16)]
+plot_3d <- function(data, rel_cols = c(10,12,14)) {
+  relevant_cols <- names(data)[rel_cols]
 
   data_clean <- data %>%
     dplyr::select(`What is your profession?`,
@@ -55,6 +56,11 @@ plot_3d <- function(data) {
     dplyr::mutate(Month = factor(Month, levels = month_levels))
 
   agg_data <- data_long %>%
+    dplyr::filter(
+      !is.na(`What is your profession?`) &
+        !is.na(`How many years of expertise do you have?`) &
+        !is.na(`What is your nationality?`)
+    ) %>%
     dplyr::group_by(
       `What is your profession?`,
       `How many years of expertise do you have?`,

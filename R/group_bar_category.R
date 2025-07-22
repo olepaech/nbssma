@@ -7,6 +7,9 @@
 #' @param data A data frame containing the survey data.
 #' @param category A character string specifying the category to group by.
 #'   Must be one of `"Profession"`, `"Experience"`, or `"Nationality"`.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A Plotly bar plot object.
 #'
@@ -15,7 +18,7 @@
 #' \dontrun{
 #'   path <- load_participant_files()
 #'   data <- readxl::read_excel(path)
-#'   group_bar_categroy(data, category = "Profession")
+#'   group_bar_categroy(data, category = "Profession", rel_cols = c(10,12,14))
 #' }
 #'
 #' @author Ole Paech
@@ -28,7 +31,7 @@
 #' @importFrom modeest mfv
 #'
 #' @export
-group_bar_categroy <- function(data, category) {
+group_bar_categroy <- function(data, category, rel_cols = c(10,12,14), ylab = "Median Rate (in %)", title = "") {
   suppressWarnings({
     category_map <- list(
       "Profession" = "What is your profession?",
@@ -41,7 +44,7 @@ group_bar_categroy <- function(data, category) {
     }
 
     category_col <- category_map[[category]]
-    relevant_cols <- names(data)[c(10, 12, 14, 16)]
+    relevant_cols <- names(data)[rel_cols]
 
     data_clean <- data |>
       dplyr::select(dplyr::all_of(category_col), dplyr::all_of(relevant_cols)) |>
@@ -60,6 +63,7 @@ group_bar_categroy <- function(data, category) {
         values_to = "Value"
       ) |>
       dplyr::filter(!is.na(Value)) |>
+      dplyr::filter(!is.na(.data[[category_col]]), .data[[category_col]] != "") |>
       dplyr::mutate(Month = extract_label(Question))
 
     month_levels <- unique(data_long$Month)[
@@ -96,7 +100,8 @@ group_bar_categroy <- function(data, category) {
     plot <- plotly::layout(
       plot,
       xaxis = list(title = category),
-      yaxis = list(title = "Median Rate"),
+      yaxis = list(title = ylab),
+      title = title,
       barmode = "group"
     )
 

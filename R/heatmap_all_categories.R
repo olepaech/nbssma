@@ -9,6 +9,8 @@
 #' Must be one of `"Profession"`, `"Experience"`, or `"Nationality"`.
 #' @param category2 A character string specifying the second category (y-Axis).
 #' Must be one of `"Profession"`, `"Experience"`, or `"Nationality"`.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A `plotly` interactive heatmap object.
 #'
@@ -17,7 +19,7 @@
 #' \dontrun{
 #' path <- load_participant_files()
 #' data <- readxl::read_excel(path)
-#' heatmap_all_categories(data, "Experience", "Profession")
+#' heatmap_all_categories(data, "Experience", "Profession", rel_cols = c(10,12,14))
 #' }
 #'
 #' @author Ole Paech
@@ -31,7 +33,7 @@
 #' @importFrom grid unit
 #'
 #' @export
-heatmap_all_categories <- function(data, category1, category2) {
+heatmap_all_categories <- function(data, category1, category2, rel_cols = c(10,12,14), title = "") {
   category_map <- list(
     "Profession" = "What is your profession?",
     "Experience" = "How many years of expertise do you have?",
@@ -44,7 +46,7 @@ heatmap_all_categories <- function(data, category1, category2) {
 
   category_col1 <- category_map[[category1]]
   category_col2 <- category_map[[category2]]
-  relevant_cols <- names(data)[c(10, 12, 14, 16)]
+  relevant_cols <- names(data)[rel_cols]
 
   data_clean <- data |>
     dplyr::select(dplyr::all_of(category_col1), dplyr::all_of(category_col2), dplyr::all_of(relevant_cols)) |>
@@ -62,6 +64,8 @@ heatmap_all_categories <- function(data, category1, category2) {
       values_to = "Value"
     ) |>
     dplyr::filter(!is.na(Value)) |>
+    dplyr::filter(!is.na(.data[[category_col1]]), .data[[category_col1]] != "") |>
+    dplyr::filter(!is.na(.data[[category_col2]]), .data[[category_col2]] != "") |>
     dplyr::mutate(Month = extract_label(Question))
 
   month_levels <- unique(data_long$Month)[
@@ -79,7 +83,7 @@ heatmap_all_categories <- function(data, category1, category2) {
 
   levels_map <- list(
     "Experience" = c("0 - 5 years", "5 - 15 years", "over 15 years"),
-    "Profession" = c("Data and Statistics", "Economics and Research", "Markets", "Financial Stability and Bank Supervision"),
+    "Profession" = c("Data and Statistics", "Economics and Research", "Markets", "Financial Stability and Bank Supervision", "Other"),
     "Nationality" = c("Slovak", "Non-Slovak")
   )
 
@@ -106,6 +110,7 @@ heatmap_all_categories <- function(data, category1, category2) {
     ggplot2::labs(
       x = category1,
       y = category2,
+      title = title,
       fill = "Median"
     ) +
     ggplot2::theme(

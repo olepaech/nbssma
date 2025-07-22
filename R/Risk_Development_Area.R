@@ -5,6 +5,10 @@
 #'
 #' @param file_paths_named_list Named list of file paths to Excel files.
 #' @param type Character string specifying the risk type: "Upside" (default) or "Downside".
+#' @param infl_col A vector stating in which column of the file the inflation data are.
+#' @param upside_col A vector stating in which columns of the file the upside risk data are.
+#' @param downside_col A vector stating in which columns of the file the downside risk data are.
+#' @param xlab A character string specifying the x-axis label (optional).
 #'
 #' @return A plotly interactive plot showing the share of total risk over time.
 #'
@@ -29,7 +33,7 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-risk_share_area <- function(file_paths_named_list, type = "Upside") {
+risk_share_area <- function(file_paths_named_list, type = "Upside", infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27), xlab = "Survey Date") {
   suppressWarnings({
   importance_map <- c(
     "Absolutely no relevance" = 0,
@@ -46,13 +50,13 @@ risk_share_area <- function(file_paths_named_list, type = "Upside") {
     df <- readxl::read_excel(path)
     df <- df %>%
       dplyr::mutate(
-        Inflation = df[[18]] %>%
+        Inflation = df[[infl_col]] %>%
           as.character() %>%
           stringr::str_replace_all("%", "") %>%
           stringr::str_replace_all(",", ".") %>%
           as.numeric()
       ) %>%
-      dplyr::select(Inflation, 19:28) %>%
+      dplyr::select(Inflation, upside_col, downside_col) %>%
       dplyr::mutate(dplyr::across(2:11, ~ importance_map[.] )) %>%
       dplyr::mutate(Source = label)
     return(df)
@@ -108,7 +112,7 @@ risk_share_area <- function(file_paths_named_list, type = "Upside") {
     ggplot2::scale_fill_manual(values = farben_named) +
     ggplot2::labs(
       title = title,
-      x = "Survey Date",
+      x = xlab,
       y = y_label,
       fill = fill_legend
     ) +

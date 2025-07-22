@@ -1,6 +1,7 @@
 #' Prepare a named list of file paths
 #'
-#' Creates a single named list of file paths.
+#' Creates a single named list of file paths. This function is makes the creation of the "files_with_labels" for
+#' the function "inflation_risk_history" more convenient.
 #'
 #' @param month_labels A character vector of month labels to load (e.g., c("May 25", "Jun 25")).
 #'

@@ -16,7 +16,7 @@
 #' @export
 
 load_risk_files <- function(month_label) {
-  base_path <- "C:/Users/olepa/OneDrive/Desktop/NBS/Answers/Archive"
+  base_path <- "O:/OMP/a_IR_survey/Archive"
   file_name <- base::paste0("Answers ", month_label, ".xlsx")
   full_path <- base::file.path(base_path, file_name)
 

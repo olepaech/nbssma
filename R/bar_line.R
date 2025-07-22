@@ -1,18 +1,21 @@
 #' Create a bar and line plot showing median and IQR over time
 #'
 #' @param data A data.frame with the survey data.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param title1 A character string specifying the title of the left y-axis (optional).
+#' @param title2 A character string specifying the title of the right y-axis (optional)..
 #'
 #' @return A Plotly object with dual-axis bar and line chart.
 #' @examples
 #' path <- load_participant_files(subfolder = "Current")
 #' data <- readxl::read_excel(path)
-#' bar_line(data)
+#' bar_line(data, rel_cols = c(10,12,14), title1 = "Median (left)", title2 = "Interquartile Range (right)")
 #'
 #' @author Ole Paech
 #' @export
-bar_line <- function(data) {
+bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", title2 = "Interquartile Range (right)") {
   suppressWarnings({
-    relevant_cols <- names(data)[c(10, 12, 14, 16)]
+    relevant_cols <- names(data)[rel_cols]
 
     data_clean <- data |>
       dplyr::select(dplyr::all_of(relevant_cols)) |>
@@ -82,13 +85,13 @@ bar_line <- function(data) {
           title = ''
         ),
         yaxis = list(
-          title = "Median (left)",
+          title = title1,
           side = "left",
           showgrid = FALSE,
           zeroline = FALSE
         ),
         yaxis2 = list(
-          title = "Interquartile Range (right)",
+          title = title2,
           overlaying = "y",
           side = "right",
           showgrid = FALSE,

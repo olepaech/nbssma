@@ -8,6 +8,8 @@
 #'   Must be one of "Profession", "Experience", or "Nationality".
 #' @param Min Numeric value for the minimum axis limit of the radar plot. Default is 1.
 #' @param Max Numeric value for the maximum axis limit of the radar plot. Default is 4.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param show_title A logical value indicating whether to display a title above the radar chart. Defaults to FALSE. Set to TRUE to add a title.
 #'
 #' @return A radar chart visualizing the median inflation expectations by group.
 #'
@@ -31,7 +33,7 @@
 #' @importFrom graphics legend
 #'
 #' @export
-spiderplot_category <- function(data, category, Min = 1, Max = 4){
+spiderplot_category <- function(data, category, Min = 1, Max = 4, rel_cols = c(10, 12, 14), show_title = FALSE){
   suppressWarnings({
     category_map <- list(
       "Profession" = "What is your profession?",
@@ -45,7 +47,7 @@ spiderplot_category <- function(data, category, Min = 1, Max = 4){
 
     category_col <- category_map[[category]]
 
-    relevant_cols <- names(data)[c(10,12,14,16)]
+    relevant_cols <- names(data)[rel_cols]
 
     data_clean <- data %>%
       dplyr::select(dplyr::all_of(category_col), dplyr::all_of(relevant_cols)) %>%
@@ -59,6 +61,7 @@ spiderplot_category <- function(data, category, Min = 1, Max = 4){
     data_long <- data_clean %>%
       tidyr::pivot_longer(cols = dplyr::all_of(relevant_cols), names_to = "Question", values_to = "Value") %>%
       dplyr::filter(!is.na(Value)) %>%
+      dplyr::filter(!is.na(.data[[category_col]]), .data[[category_col]] != "") %>%
       dplyr::mutate(Month = extract_label(Question))
 
     month_levels <- unique(data_long$Month)[
@@ -102,7 +105,9 @@ spiderplot_category <- function(data, category, Min = 1, Max = 4){
       caxislabels = seq(1, 4, 0.5),
       vlcex = 0.8
     )
-
+    if (show_title) {
+      title(main = paste("Median Expectations by", category))
+    }
     graphics::legend("topright", legend = rownames(radar_df)[-c(1, 2)],
                      col = grDevices::rainbow(nrow(radar_df) - 2), lty = 1, lwd = 2, bty = "n")
   })

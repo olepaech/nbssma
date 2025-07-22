@@ -5,6 +5,10 @@
 #' along with the interquartile range as a shaded area.
 #'
 #' @param data A data frame with survey response data.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A \code{plotly} interactive scatter plot with shaded interquartile range and median lines.
 #'
@@ -26,9 +30,9 @@
 #' @importFrom plotly plot_ly add_trace layout
 #'
 #' @export
-shaded_plot <- function(data) {
+shaded_plot <- function(data, rel_cols = c(10, 12, 14), xlab = "", ylab = "Rate (in %)", title = "") {
   suppressWarnings({
-    relevant_cols <- names(data)[c(10,12,14,16)]
+    relevant_cols <- names(data)[rel_cols]
 
     data_clean <- data %>%
       dplyr::select(dplyr::all_of(relevant_cols)) %>%
@@ -101,9 +105,10 @@ shaded_plot <- function(data) {
           tickmode = 'array',
           tickvals = x_vals,
           ticktext = x_labels,
-          title = ''
+          title = xlab
         ),
-        yaxis = list(title = 'Rate (in %)'),
+        yaxis = list(title = ylab),
+        title = title,
         hovermode = 'x unified',
         showlegend = FALSE
       )

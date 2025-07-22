@@ -4,6 +4,9 @@
 #' from a data frame and displays them in a wide-format table.
 #'
 #' @param df A data frame containing at least 4 pairs of numeric rate and corresponding text columns.
+#' @param rate_col A vector stating in which columns of the file the expected DFR data are.
+#' @param text_col A vector stating in which columns of the file the explanations for DFR expectations are.
+#'
 #'
 #' @return A rendered table object showing the textual responses by question.
 #'
@@ -17,16 +20,16 @@
 #' }
 #'
 #' @importFrom magrittr %>%
+#' @importFrom gt gt tab_header cols_label
+#' @importFrom dplyr rename_with
+#' @importFrom tidyr pivot_wider
 #' @importFrom purrr map2_dfr
 #' @importFrom tibble tibble
-#' @importFrom dplyr filter group_by mutate row_number ungroup
-#' @importFrom tidyr pivot_wider
-#' @importFrom gridExtra grid.table
 #'
 #' @export
-table_reasons <- function(df) {
-  rate_cols <- names(df)[c(10, 12, 14, 16)]
-  text_cols <- names(df)[c(11, 13, 15, 17)]
+table_reasons <- function(df, rate_col = c(10, 12, 14), text_col = c(11, 13, 15)) {
+  rate_cols <- names(df)[rate_col]
+  text_cols <- names(df)[text_col]
 
   text_df <- purrr::map2_dfr(rate_cols, text_cols, ~ {
     label <- extract_label(.x)
@@ -35,19 +38,12 @@ table_reasons <- function(df) {
       response = as.character(df[[.y]])
     )
   }) %>%
-    dplyr::filter(!is.na(response), response != "")
-
-  text_df <- text_df %>%
+    dplyr::filter(!is.na(response), response != "") %>%
     dplyr::group_by(label) %>%
     dplyr::mutate(row = dplyr::row_number()) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    tidyr::pivot_wider(names_from = label, values_from = response, values_fill = "") %>%
+    dplyr::rename_with(~ stringr::str_wrap(., width = 20))
 
-  wide_df <- text_df %>%
-    tidyr::pivot_wider(
-      names_from = label,
-      values_from = response,
-      values_fill = list(response = "")
-    )
-
-  gridExtra::grid.table(wide_df)
+  gt::gt(text_df)
 }

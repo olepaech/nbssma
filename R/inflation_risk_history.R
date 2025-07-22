@@ -6,6 +6,13 @@
 #'
 #' @param files_with_labels A chronological named list, where each element is the path
 #'   to an Excel file and the name is the corresponding survey date label.
+#' @param infl_col A vector stating in which column of the file the inflation data are.
+#' @param upside_col A vector stating in which columns of the file the upside risk data are.
+#' @param downside_col A vector stating in which columns of the file the downside risk data are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
+#'
 #'
 #' @return An interactive plotly object visualizing the inflation expectation
 #'   and risk factor contribution/s over time.
@@ -14,7 +21,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' files <- prepare_file_list(c("May 25", "Jun 25"))
+#' files <- prepare_file_list(c("May 25", "Jun 25"), infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27))
 #' inflation_risk_history(files)
 #' }
 #'
@@ -30,28 +37,28 @@
 #' @importFrom stats na.omit
 #'
 #' @export
-inflation_risk_history <- function(files_with_labels) {
+inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27), xlab = "", ylab = "Average Inflation Expectations (in %)",  title = "Development of Inflation Projections and percieved Risks") {
   suppressWarnings({
     suppressMessages({
       importance_map <- c(
         "Absolutely no relevance" = 0,
-        "Not so Important" = 1,
-        "Moderate" = 2,
-        "Important" = 3,
-        "Very Important" = 4
+        "Not so Important" = 0.5,
+        "Moderate" = 1.0,
+        "Important" = 1.5,
+        "Very Important" = 2.0
       )
 
       process_file <- function(path, label) {
         df <- readxl::read_excel(path)
 
         df <- dplyr::mutate(df,
-                            Inflation = df[[18]] %>%
+                            Inflation = df[[infl_col]] %>%
                               as.character() %>%
                               stringr::str_replace_all("%", "") %>%
                               stringr::str_replace_all(",", ".") %>%
                               as.numeric()
         ) %>%
-          dplyr::select(Inflation, 19:28) %>%
+          dplyr::select(Inflation, upside_col,downside_col) %>%
           dplyr::mutate(dplyr::across(2:11, ~ importance_map[.])) %>%
           dplyr::mutate(Source = label)
 
@@ -189,9 +196,10 @@ inflation_risk_history <- function(files_with_labels) {
         ) +
         ggplot2::scale_fill_manual(values = colors_named) +
         ggplot2::labs(
-          y = "Average Inflation Expectation",
-          x = "Survey Date",
-          fill = "Risk Factor"
+          y = ylab,
+          x = xlab,
+          fill = "Risk Factor",
+          title = title
         ) +
         ggplot2::theme_minimal() +
         ggplot2::theme(

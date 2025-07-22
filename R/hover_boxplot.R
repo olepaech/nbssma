@@ -5,12 +5,16 @@
 #' @param data A data frame containing survey responses.
 #'
 #' @return A `plotly` interactive boxplot object.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @examples
 #' \dontrun{
 #' path <- load_participant_files()
 #' data <- readxl::read_excel(path)
-#' hover_boxplot(data)
+#' hover_boxplot(data, rel_cols = c(10,12,14))
 #' }
 #'
 #' @author Ole Paech
@@ -23,8 +27,8 @@
 #' @importFrom stats quantile median
 #'
 #' @export
-hover_boxplot <- function(data) {
-  relevant_cols <- names(data)[c(10, 12, 14, 16)]
+hover_boxplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Median Rate (in %)", title = "") {
+  relevant_cols <- names(data)[rel_cols]
 
   data_clean <- data %>%
     dplyr::select(dplyr::all_of(relevant_cols)) %>%
@@ -81,8 +85,9 @@ hover_boxplot <- function(data) {
 
   plot <- plotly::layout(
     plot,
-    yaxis = list(title = "Rate (%)"),
-    xaxis = list(title = "", categoryorder = "array", categoryarray = category_order)
+    yaxis = list(title = ylab),
+    xaxis = list(title = xlab, categoryorder = "array", categoryarray = category_order),
+    title = title
   )
 
   plot

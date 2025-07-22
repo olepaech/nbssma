@@ -7,6 +7,10 @@
 #' @param data A data frame containing survey results.
 #' @param category A string indicating the grouping category. Must be one of
 #'   `"Profession"`, `"Experience"`, or `"Nationality"`.
+#' @param rel_cols A vector stating in which columns of the file the data to visualize are.
+#' @param xlab A character string specifying the x-axis label (optional).
+#' @param ylab A character string specifying the y-axis label (optional).
+#' @param title A character string specifying the title of the graph (optional).
 #'
 #' @return A Plotly object containing facetted boxplots by month and category.
 #'
@@ -14,7 +18,7 @@
 #' \dontrun{
 #'   path <- load_participant_files()
 #'   data <- readxl::read_excel(path)
-#'   boxplot_categories(data, category = "Profession")
+#'   boxplot_categories(data, category = "Profession", rel_cols = c(10,12,14), title = "Boxplots based on Profession")
 #' }
 #'
 #' @author Ole Paech
@@ -27,7 +31,7 @@
 #' @importFrom plotly ggplotly
 #'
 #' @export
-boxplot_categories <- function(data, category) {
+boxplot_categories <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (in %)", title = "") {
   category_map <- list(
     "Profession" = "What is your profession?",
     "Experience" = "How many years of expertise do you have?",
@@ -39,7 +43,7 @@ boxplot_categories <- function(data, category) {
   }
 
   category_col <- category_map[[category]]
-  relevant_cols <- names(data)[c(10, 12, 14, 16)]
+  relevant_cols <- names(data)[rel_cols]
 
   data_clean <- data |>
     dplyr::select(dplyr::all_of(category_col), dplyr::all_of(relevant_cols)) |>
@@ -55,9 +59,9 @@ boxplot_categories <- function(data, category) {
     tidyr::pivot_longer(
       cols = dplyr::all_of(relevant_cols),
       names_to = "Question",
-      values_to = "Rate"
-    ) |>
+      values_to = "Rate") |>
     dplyr::filter(!is.na(Rate)) |>
+    dplyr::filter(!is.na(.data[[category_col]]), .data[[category_col]] != "") |>
     dplyr::mutate(Month = extract_label(Question))
 
   stats_data <- data_long |>
@@ -86,7 +90,7 @@ boxplot_categories <- function(data, category) {
   ) +
     ggplot2::geom_boxplot(color = "black") +
     ggplot2::facet_wrap(~ Month) +
-    ggplot2::labs(x = NULL, y = "Rate (%)", fill = category) +
+    ggplot2::labs(x = xlab, y = ylab, fill = category, title = title) +
     ggplot2::theme_minimal(base_size = 14) +
     ggplot2::theme(
       axis.text.x = ggplot2::element_blank(),
