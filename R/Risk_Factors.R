@@ -37,6 +37,8 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_c
     risks_1 <- gsub("2", "", risks_1)
     risks_2 <- gsub("2", "", risks_2)
 
+    all_risks <- unique(c(risks_1, risks_2))
+
     mapping <- c(
       "Absolutely no relevance" = 0,
       "Not so Important" = 0.5,
@@ -52,24 +54,36 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_c
         inflation_value = suppressWarnings(as.numeric(trimws(inflation_clean_char)))
       ) %>%
       dplyr::mutate(dplyr::across(
-        .cols = dplyr::all_of(c(risks_1, risks_2)),
+        .cols = dplyr::all_of(c(names(df)[upside_col], names(df)[downside_col])),
         .fns = ~ mapping[trimws(as.character(.))],
         .names = "num_{.col}"
       ))
 
-    risk1_means <- colMeans(df_clean %>% dplyr::select(dplyr::starts_with("num_") & dplyr::all_of(paste0("num_", risks_1))), na.rm = TRUE)
-    risk2_means <- colMeans(df_clean %>% dplyr::select(dplyr::starts_with("num_") & dplyr::all_of(paste0("num_", risks_2))), na.rm = TRUE)
+    risk1_means_raw <- colMeans(df_clean %>% dplyr::select(dplyr::starts_with("num_") & dplyr::all_of(paste0("num_", names(df)[upside_col]))), na.rm = TRUE)
+    risk2_means_raw <- colMeans(df_clean %>% dplyr::select(dplyr::starts_with("num_") & dplyr::all_of(paste0("num_", names(df)[downside_col]))), na.rm = TRUE)
+
+    names(risk1_means_raw) <- gsub("^num_", "", names(risk1_means_raw))
+    names(risk2_means_raw) <- gsub("^num_", "", names(risk2_means_raw))
+    names(risk1_means_raw) <- gsub("2", "", names(risk1_means_raw))
+    names(risk2_means_raw) <- gsub("2", "", names(risk2_means_raw))
+    risk1_means <- setNames(numeric(length(all_risks)), all_risks)
+    risk2_means <- setNames(numeric(length(all_risks)), all_risks)
+
+    risk1_means[names(risk1_means_raw)] <- risk1_means_raw
+    risk2_means[names(risk2_means_raw)] <- risk2_means_raw
+
     inflation_value <- mean(df_clean$inflation_value, na.rm = TRUE)
 
     df_plot <- data.frame(
-      Variable = c(paste0("Upside_", risks_1), paste0("Downside_", risks_2)),
+      Variable = rep(all_risks, 2),
       Value = c(risk1_means, -risk2_means),
-      Group = c(rep("Q-V", length(risks_1)), rep("X–AC", length(risks_2)))
+      Group = rep(c("Upside Risks", "Downside Risks"), each = length(all_risks))
     )
 
-    farben <- c("#1C355E", "#CCE1EE", "#74253E", "#00594F", "#D15F27","white",
-                "#1C355E", "#c7932c", "#74253E", "#CCE1EE", "#A2A9AD", "white")
-    df_plot$Variable <- factor(df_plot$Variable, levels = c(paste0("Upside_", risks_1), paste0("Downside_", risks_2)))
+    farben <- c("#1c355e", "#0067ab", "#cce1ee", "#d15f27","#A5835A", "#74253e","#00594f", "#A2A9AD", "#c7932c")
+    farben_named <- setNames(rep(farben, length.out = length(all_risks)), all_risks)
+
+    df_plot$Variable <- factor(df_plot$Variable, levels = all_risks)
 
     df_plot <- df_plot %>%
       dplyr::arrange(Group, -Value) %>%
@@ -82,14 +96,11 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_c
       dplyr::mutate(
         ymin = inflation_value + ymin,
         ymax = inflation_value + ymax,
-        x = ifelse(Group == "Q-V", "Upside Risks", "Downside Risks")
+        x = Group
       ) %>%
       dplyr::group_by(Group) %>%
       dplyr::mutate(share = round(abs(Value) / sum(abs(Value)) * 100, 1)) %>%
       dplyr::ungroup()
-
-    total_upside <- round(sum(df_plot$Value[df_plot$Group == "Q-V"]), 2)
-    total_downside <- round(sum(abs(df_plot$Value[df_plot$Group == "X–AC"])), 2)
 
     p <- ggplot2::ggplot(df_plot, ggplot2::aes(x = x, ymin = ymin, ymax = ymax, fill = Variable,
                                                text = paste0(Variable, ": ", share, "%"))) +
@@ -100,30 +111,31 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_c
                           color = "transparent") +
       ggplot2::annotate("text",
                         x = 1,
-                        y = max(df_plot$ymax[df_plot$Group == "Q–V"]) + 0.5,
-                        label = paste0("Upside Risk"),
+                        y = max(df_plot$ymax[df_plot$Group == "Upside Risks"]) + 0.5,
+                        label = "Upside Risk",
                         size = 4, fontface = "bold", hjust = 0.5) +
       ggplot2::annotate("text",
                         x = 1,
-                        y = min(df_plot$ymin[df_plot$Group == "X–AC"]) - 2.2,
-                        label = paste0("Downside Risk"),
+                        y = min(df_plot$ymin[df_plot$Group == "Downside Risks"]) - 2.2,
+                        label = "Downside Risk",
                         size = 4, fontface = "bold", hjust = 0.5) +
-      ggplot2::scale_fill_manual(values = farben) +
+      ggplot2::scale_fill_manual(values = farben_named) +
       ggplot2::scale_y_continuous(name = ylab,
                                   breaks = seq(
                                     floor(min(df_plot$ymin, na.rm = TRUE)),
                                     ceiling(max(df_plot$ymax, na.rm = TRUE)),
                                     by = 0.5
-                                    )) +
+                                  )) +
       ggplot2::theme_minimal() +
       ggplot2::labs(x = xlab, title = title) +
       ggplot2::theme(
-        axis.text.x = ggplot2::element_blank(),
+        axis.text.x = ggplot2::element_text(family = "Arial", face = "bold", size = 12),
+        axis.text.y = ggplot2::element_text(family = "Arial", size = 10),
         axis.ticks.x = ggplot2::element_blank(),
-        axis.text.y = ggplot2::element_text(size = 10),
         panel.grid.major.x = ggplot2::element_blank(),
         legend.position = "right",
-        legend.title = ggplot2::element_blank()
+        legend.title = ggplot2::element_blank(),
+        text = ggplot2::element_text(family = "Arial")
       )
 
     plotly::ggplotly(p, tooltip = "text")

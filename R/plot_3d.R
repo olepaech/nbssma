@@ -85,6 +85,14 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
 
   monthly_data <- split(agg_data, agg_data$Month)
 
+  fixed_colorscale <- list(
+    c(0, "#e6f0f7"),
+    c(0.25, "#b3d1e6"),
+    c(0.5, "#80B3d5"),
+    c(0.75, "#3385bc"),
+    c(1, "#00518a")
+  )
+
   plots <- lapply(names(monthly_data), function(month_name) {
     month_data <- monthly_data[[month_name]]
 
@@ -98,7 +106,7 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
       marker = list(
         size = 6,
         color = ~Median_Expectation,
-        colorscale = "Reds",
+        colorscale = fixed_colorscale,
         showscale = TRUE
       ),
       text = ~paste(
@@ -111,12 +119,13 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
       hoverinfo = "text"
     ) %>%
       plotly::layout(
-        title = paste("3D Median Expectations –", month_name),
+        title = list(text = paste("3D Median Expectations –", month_name), font = list(family = "Arial", size = 16)),
         scene = list(
-          xaxis = list(title = "Nationality"),
-          yaxis = list(title = "Experience"),
-          zaxis = list(title = "Profession")
-        )
+          xaxis = list(title = "Nationality", titlefont = list(family = "Arial", size = 14)),
+          yaxis = list(title = "Experience", titlefont = list(family = "Arial", size = 14)),
+          zaxis = list(title = "Profession", titlefont = list(family = "Arial", size = 14))
+        ),
+        font = list(family = "Arial", size = 12)
       )
   })
 

@@ -93,22 +93,43 @@ spiderplot_category <- function(data, category, Min = 1, Max = 4, rel_cols = c(1
     radar_df <- dplyr::bind_rows(max_row, min_row, radar_df)
     radar_df <- tibble::column_to_rownames(radar_df, "Month")
 
+
+    farben <- c("#1c355e", "#0067ab", "#cce1ee", "#d15f27","#A5835A", "#74253e","#00594f", "#A2A9AD", "#c7932c")
+    n_groups <- ncol(radar_df) - 1
+
+    plot_colors <- rep(farben, length.out = n_groups)
+    graphics::par(family = "Arial")
+
     fmsb::radarchart(
       radar_df,
       axistype = 1,
-      pcol = grDevices::rainbow(nrow(radar_df) - 2),
+      pcol = plot_colors,
       plwd = 2,
       plty = 1,
       cglcol = "grey",
       cglty = 1,
       axislabcol = "grey",
-      caxislabels = seq(1, 4, 0.5),
+      caxislabels = seq(Min, Max, 0.5),
       vlcex = 0.8
     )
+
     if (show_title) {
-      title(main = paste("Median Expectations by", category))
+      graphics::title(main = paste("Median Expectations by", category), family = "Arial")
     }
-    graphics::legend("topright", legend = rownames(radar_df)[-c(1, 2)],
-                     col = grDevices::rainbow(nrow(radar_df) - 2), lty = 1, lwd = 2, bty = "n")
+
+    graphics::legend(
+      "topright",
+      legend = rownames(radar_df)[-c(1, 2)],
+      col = plot_colors,
+      lty = 1,
+      lwd = 2,
+      bty = "n",
+      text.font = 1,
+      text.col = "black",
+      cex = 0.9,
+      inset = 0.02,
+      xjust = 1,
+      yjust = 1
+    )
   })
 }

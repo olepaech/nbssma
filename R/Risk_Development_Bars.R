@@ -58,7 +58,7 @@ risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c
           as.numeric()
       ) %>%
       dplyr::select(Inflation, upside_col, downside_col) %>%
-      dplyr::mutate(dplyr::across(2:11, ~ importance_map[.])) %>%
+      dplyr::mutate(dplyr::across(2:13, ~ importance_map[.])) %>%
       dplyr::mutate(Source = label)
 
     return(df)
@@ -70,11 +70,11 @@ risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c
     dplyr::mutate(Source = factor(Source, levels = names(file_paths_named_list)))
 
   if (type == "Upside") {
-    selected_cols <- 2:6
+    selected_cols <- 2:7
     prefix <- "Upside"
     title <- "Composition of Upside Risk Over Time"
   } else {
-    selected_cols <- 7:11
+    selected_cols <- 8:13
     prefix <- "Downside"
     title <- "Composition of Downside Risk Over Time"
   }
@@ -85,13 +85,16 @@ risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c
 
   risk_shares <- summary_data %>%
     tidyr::pivot_longer(-Source, names_to = "Risk", values_to = "Value") %>%
-    dplyr::mutate(Risk = stringr::str_remove(Risk, paste0("^", prefix, "_"))) %>%
+    dplyr::mutate(
+      Risk = stringr::str_remove(Risk, paste0("^", prefix, "_")),
+      Risk = stringr::str_remove_all(Risk, "2$")
+    ) %>%
     dplyr::group_by(Source) %>%
     dplyr::mutate(Share = Value / sum(Value, na.rm = TRUE)) %>%
     dplyr::ungroup() %>%
     dplyr::mutate(text = paste0("Risk: ", Risk, "\nDate: ", Source, "\nShare: ", round(Share * 100, 1), "%"))
 
-  farben <- c("#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e")
+  farben <- c("#1c355e", "#0067ab", "#cce1ee", "#d15f27", "#74253e","#00594f")
   risks <- sort(unique(risk_shares$Risk))
   farben_named <- stats::setNames(rep_len(farben, length(risks)), risks)
 
@@ -107,7 +110,7 @@ risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c
     ) +
     ggplot2::theme_minimal() +
     ggplot2::theme(
-      text = ggplot2::element_text(size = 14),
+      text = ggplot2::element_text(family = "Arial", size = 14),
       plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
     )
 

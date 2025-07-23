@@ -22,7 +22,7 @@
 #' @examples
 #' \dontrun{
 #' files <- prepare_file_list(c("May 25", "Jun 25"))
-#' inflation_risk_history(files, infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27))
+#' inflation_risk_history(files, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29))
 #' }
 #'
 #' @author Ole Paech
@@ -37,7 +37,7 @@
 #' @importFrom stats na.omit
 #'
 #' @export
-inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29), xlab = "", ylab = "Average Inflation Expectations (in %)",  title = "Development of Inflation Projections and percieved Risks") {
+inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29), xlab = "Survey Date", ylab = "Average Inflation Expectations (in %)", title = "Development of Inflation Projections and perceived Risks") {
   suppressWarnings({
     suppressMessages({
       importance_map <- c(
@@ -47,6 +47,13 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         "Important" = 1.5,
         "Very Important" = 2.0
       )
+
+      rename_risk <- function(x) {
+        x <- gsub("Upside_", "", x)
+        x <- gsub("Downside_", "", x)
+        x <- gsub("2", "", x)
+        return(x)
+      }
 
       process_file <- function(path, label) {
         df <- readxl::read_excel(path)
@@ -58,7 +65,7 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
                               stringr::str_replace_all(",", ".") %>%
                               as.numeric()
         ) %>%
-          dplyr::select(Inflation, upside_col,downside_col) %>%
+          dplyr::select(Inflation, upside_col, downside_col) %>%
           dplyr::mutate(dplyr::across(2:13, ~ importance_map[.])) %>%
           dplyr::mutate(Source = label)
 
@@ -86,12 +93,18 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
       upside <- summary_data %>%
         dplyr::select(Source, dplyr::starts_with("Upside_")) %>%
         tidyr::pivot_longer(-Source, names_to = "Risk", values_to = "Value") %>%
-        dplyr::mutate(Type = "Upside")
+        dplyr::mutate(
+          Type = "Upside",
+          Risk_clean = rename_risk(Risk)
+        )
 
       downside <- summary_data %>%
         dplyr::select(Source, dplyr::starts_with("Downside_")) %>%
         tidyr::pivot_longer(-Source, names_to = "Risk", values_to = "Value") %>%
-        dplyr::mutate(Type = "Downside")
+        dplyr::mutate(
+          Type = "Downside",
+          Risk_clean = rename_risk(Risk)
+        )
 
       stack_data <- dplyr::bind_rows(upside, downside)
 
@@ -103,7 +116,7 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
 
       stack_data <- stack_data %>%
         dplyr::group_by(Source, Type) %>%
-        dplyr::arrange(Source, Type, Risk) %>%
+        dplyr::arrange(Source, Type, Risk_clean) %>%
         dplyr::mutate(
           Share = Value / sum(Value, na.rm = TRUE),
           Total = sum(Value, na.rm = TRUE),
@@ -119,14 +132,16 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         ) %>%
         dplyr::ungroup()
 
-      colors <- c(
-        "#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e",
-        "#a6761d", "#666666", "#e6ab02", "#1f78b4", "#b2df8a"
-      )
+      unique_risks <- sort(unique(stack_data$Risk_clean))
 
-      unique_risks <- sort(unique(stack_data$Risk))
-      stack_data$Risk <- factor(stack_data$Risk, levels = unique_risks)
-      colors_named <- setNames(colors, levels(stack_data$Risk))
+      colors <- c("#1C355E","#0067AB","#CCE1EE","#A5835A","#74253E","#00594F","#D15F27","#C7932C","#A2A9AD")
+      if (length(unique_risks) > 9) {
+        extra_colors <- grDevices::colors()[grep('gr(a|e)y', grDevices::colors(), invert = TRUE)]
+        set.seed(123)
+        colors <- c(colors, sample(extra_colors, length(unique_risks) - 9))
+      }
+
+      colors_named <- setNames(colors[1:length(unique_risks)], unique_risks)
 
       inflation_points <- summary_data %>%
         dplyr::mutate(
@@ -139,7 +154,8 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         dplyr::summarise(
           Total = unique(Total),
           inflation_exp = unique(inflation_exp),
-          x = as.numeric(unique(Source))
+          x = as.numeric(unique(Source)),
+          .groups = "drop"
         ) %>%
         dplyr::mutate(
           y = ifelse(Type == "Upside", inflation_exp + Total + 0.3, inflation_exp - Total - 0.3),
@@ -154,8 +170,8 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
             xmax = as.numeric(factor(Source)) + 0.3,
             ymin = ymin,
             ymax = ymax,
-            fill = Risk,
-            text = paste0(Risk, ": ", round(Share * 100, 1), "%")
+            fill = Risk_clean,
+            text = paste0(Risk_clean, ": ", round(Share * 100, 1), "%")
           ),
           color = "black"
         ) +
@@ -175,7 +191,7 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
             y = inflation_exp,
             text = text
           ),
-          color = "black", size = 2
+          color = "grey", size = 2
         ) +
         ggplot2::geom_text(
           data = dplyr::filter(totals_df, Type == "Upside"),
@@ -203,8 +219,8 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         ) +
         ggplot2::theme_minimal() +
         ggplot2::theme(
-          text = ggplot2::element_text(size = 14),
-          plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
+          text = ggplot2::element_text(size = 14, family = "Arial"),
+          plot.title = ggplot2::element_text(face = "bold", hjust = 0.5, family = "Arial")
         )
 
       plotly::ggplotly(p, tooltip = "text")

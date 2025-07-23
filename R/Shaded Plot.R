@@ -94,8 +94,8 @@ shaded_plot <- function(data, rel_cols = c(10, 12, 14), xlab = "", ylab = "Rate 
         y = summary_stats$Median,
         type = 'scatter',
         mode = 'lines+markers',
-        line = list(color = 'blue', width = 2),
-        marker = list(color = 'blue', size = 8),
+        line = list(color = '#1C355E', width = 2),
+        marker = list(color = '#1c355e', size = 8),
         hoverinfo = 'text',
         text = paste0("Median: ", round(summary_stats$Median, 2)),
         name = 'Median'
@@ -110,7 +110,8 @@ shaded_plot <- function(data, rel_cols = c(10, 12, 14), xlab = "", ylab = "Rate 
         yaxis = list(title = ylab),
         title = title,
         hovermode = 'x unified',
-        showlegend = FALSE
+        showlegend = FALSE,
+        font = list(family = "Arial")  # <-- Schriftart auf Arial gesetzt
       )
   })
 }
