@@ -84,11 +84,15 @@ group_bar_month <- function(data, category, rel_cols = c(10,12,14), ylab = "Medi
         .groups = "drop"
       )
 
+    my_colors <- c("#1c355e", "#0067ab", "#cce1ee", "#a5835a", "#74253e",
+                   "#00594f", "#d15f27", "#c7932c", "#a2a9ad")
+
     plot <- plotly::plot_ly(
       data = stats,
       x = ~Month,
       y = ~Median,
       color = as.formula(paste0("~`", category_col, "`")),
+      colors = my_colors,
       type = "bar",
       text = ~paste0(
         Month, "<br>",
@@ -103,9 +107,9 @@ group_bar_month <- function(data, category, rel_cols = c(10,12,14), ylab = "Medi
 
     plot <- plotly::layout(
       plot,
-      xaxis = list(title = category),
-      yaxis = list(title = ylab),
-      title = title,
+      xaxis = list(title = list(text = category, font = list(family = "Arial"))),
+      yaxis = list(title = list(text = ylab, font = list(family = "Arial"))),
+      title = list(text = title, font = list(family = "Arial")),
       barmode = "group"
     )
 

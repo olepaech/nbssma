@@ -18,7 +18,7 @@
 #' @examples
 #' \dontrun{
 #' files <- prepare_file_list(c("May 25", "Jun 25"))
-#' aggregate_risk_development(data)
+#' aggregate_risk_development(files)
 #' }
 #'
 #' @importFrom magrittr %>%
@@ -46,7 +46,6 @@ aggregate_risk_development <- function(file_paths_named_list,
   process_file <- function(path, label) {
     df <- readxl::read_excel(path)
 
-    # Neue Spaltennamen
     col_names <- c("Inflation", paste0("Upside_", seq_along(upside_col)), paste0("Downside_", seq_along(downside_col)))
 
     df <- df %>%
@@ -108,7 +107,9 @@ aggregate_risk_development <- function(file_paths_named_list,
     ggplot2::theme_minimal() +
     ggplot2::theme(
       text = ggplot2::element_text(size = 14),
-      plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
+      plot.title = ggplot2::element_text(face = "bold", hjust = 0.5),
+      legend.position = "right",
+      legend.title = element_blank()
     )
 
   return(plotly::ggplotly(p, tooltip = "text"))

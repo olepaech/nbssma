@@ -32,6 +32,7 @@
 hover_barplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab =  "Median Rate (in %)", title = ""){
   relevant_cols <- names(data)[rel_cols]
   month_labels <- extract_label(relevant_cols)
+
   data_numeric <- data %>%
     dplyr::select(dplyr::all_of(relevant_cols)) %>%
     dplyr::mutate(dplyr::across(dplyr::everything(), ~ .x %>%
@@ -61,6 +62,7 @@ hover_barplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab =  "Medi
     x = ~Month,
     y = ~Median,
     type = 'bar',
+    marker = list(color = "#1c355e"),
     text = ~paste0(
       "Median: ", round(Median, 2), "<br>",
       "Modus: ", round(Mode, 2), "<br>",
@@ -71,9 +73,10 @@ hover_barplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab =  "Medi
     textposition = 'none'
   ) %>%
     plotly::layout(
-      yaxis = list(title = ylab),
-      xaxis = list(title = xlab, categoryorder = "array", categoryarray = month_labels),
-      title = title
+      yaxis = list(title = ylab, tickfont = list(family = "Arial"), titlefont = list(family = "Arial")),
+      xaxis = list(title = xlab, categoryorder = "array", categoryarray = month_labels, tickfont = list(family = "Arial"), titlefont = list(family = "Arial")),
+      title = list(text = title, font = list(family = "Arial")),
+      font = list(family = "Arial")
     )
 
   fig

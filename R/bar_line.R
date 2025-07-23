@@ -30,7 +30,7 @@ bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", tit
     data_long <- data_clean |>
       tidyr::pivot_longer(cols = dplyr::everything(), names_to = "Question", values_to = "Value") |>
       dplyr::filter(!is.na(Value)) |>
-      dplyr::mutate(Month = extract_label(Question))  # Achtung: Diese Funktion muss auch im Package definiert werden
+      dplyr::mutate(Month = extract_label(Question))
 
     stats <- data_long |>
       dplyr::group_by(Month) |>
@@ -56,7 +56,7 @@ bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", tit
         data = stats,
         name = "Median",
         yaxis = "y1",
-        marker = list(color = "steelblue"),
+        marker = list(color = "#1c355e"),
         hovertemplate = paste(
           x_labels,
           "<br>Median: %{y:.2f}<extra></extra>"
@@ -70,7 +70,7 @@ bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", tit
         mode = "lines+markers",
         name = "IQR",
         yaxis = "y2",
-        line = list(color = "firebrick", width = 3),
+        line = list(color = "#cce1ee", width = 3),
         marker = list(size = 6),
         hovertemplate = paste(
           x_labels,
@@ -78,24 +78,34 @@ bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", tit
         )
       ) |>
       plotly::layout(
+        title = list(
+          text = "",  # Optional: Plot-Titel hier setzen
+          font = list(family = "Arial", size = 18)
+        ),
         xaxis = list(
           tickmode = 'array',
           tickvals = x_vals,
           ticktext = x_labels,
-          title = ''
+          title = '',
+          titlefont = list(family = "Arial", size = 16),
+          tickfont = list(family = "Arial", size = 12)
         ),
         yaxis = list(
           title = title1,
           side = "left",
           showgrid = FALSE,
-          zeroline = FALSE
+          zeroline = FALSE,
+          titlefont = list(family = "Arial", size = 16),
+          tickfont = list(family = "Arial", size = 12)
         ),
         yaxis2 = list(
           title = title2,
           overlaying = "y",
           side = "right",
           showgrid = FALSE,
-          zeroline = FALSE
+          zeroline = FALSE,
+          titlefont = list(family = "Arial", size = 16),
+          tickfont = list(family = "Arial", size = 12)
         ),
         legend = FALSE
       )

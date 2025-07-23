@@ -78,7 +78,8 @@ grouped_histogram <- function(data, rel_cols = c(10,12,14), xlab = "Expected Rat
     data_long$Bin <- cut(data_long$Rate, breaks = breaks, labels = labels,
                          include.lowest = TRUE, right = FALSE)
 
-    Colors <- c("#0072B2", "#E69F00", "red", "green")
+    Colors <- c("#1c355e", "#0067ab", "#cce1ee", "#a5835a", "#74253e",
+                "#00594f", "#d15f27", "#c7932c", "#a2a9ad")
     Colors <- Colors[seq_along(months_sorted)]
 
     hist_data <- data_long |>
@@ -141,9 +142,20 @@ grouped_histogram <- function(data, rel_cols = c(10,12,14), xlab = "Expected Rat
                          show.legend = FALSE) +
       ggplot2::scale_fill_manual(values = Colors, labels = months_sorted) +
       ggplot2::labs(x = xlab, y = ylab, title = title, fill = "Month") +
-      ggplot2::theme_minimal(base_size = 14)
+      ggplot2::theme_minimal(base_size = 14) +
+      ggplot2::theme(
+        text = ggplot2::element_text(family = "Arial"),
+        axis.title = ggplot2::element_text(family = "Arial"),
+        axis.text = ggplot2::element_text(family = "Arial"),
+        plot.title = ggplot2::element_text(family = "Arial")
+      )
 
     plotly::ggplotly(p, tooltip = "text") |>
-      plotly::layout(legend = list(title = list(text = "<b> Month </b>")))
+      plotly::layout(
+        legend = list(title = list(text = "<b> Month </b>"), font = list(family = "Arial")),
+        xaxis = list(titlefont = list(family = "Arial"), tickfont = list(family = "Arial")),
+        yaxis = list(titlefont = list(family = "Arial"), tickfont = list(family = "Arial")),
+        font = list(family = "Arial")
+      )
   })
 }

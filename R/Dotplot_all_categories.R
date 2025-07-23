@@ -71,6 +71,9 @@ dotplot <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "R
   data_long <- data_long |>
     dplyr::mutate(Month = factor(Month, levels = month_levels))
 
+  my_colors <- c("#1c355e", "#0067ab", "#cce1ee", "#a5835a", "#74253e",
+                 "#00594f", "#d15f27", "#c7932c", "#a2a9ad")
+
   p <- ggplot2::ggplot(data_long, ggplot2::aes(
     x = Month,
     y = Rate,
@@ -81,15 +84,17 @@ dotplot <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "R
     )
   )) +
     ggplot2::geom_jitter(width = 0.2, height = 0.02, size = 3, alpha = 0.8) +
+    ggplot2::scale_color_manual(values = my_colors) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       x = xlab, y = ylab, title = title,
       color = category
     ) +
     ggplot2::theme(
-      text = ggplot2::element_text(size = 12),
-      plot.title = ggplot2::element_text(hjust = 0.5)
-    )
-
+    text = ggplot2::element_text(size = 12, family = "Arial"),
+    plot.title = ggplot2::element_text(hjust = 0.5, family = "Arial"),
+    axis.title = ggplot2::element_text(family = "Arial"),
+    axis.text = ggplot2::element_text(family = "Arial")
+)
   plotly::ggplotly(p, tooltip = "text")
 }

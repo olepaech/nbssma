@@ -19,7 +19,7 @@
 #' \dontrun{
 #' path <- load_participant_files()
 #' data <- readxl::read_excel(path)
-#' risk_factors(data)
+#' aggregated_risk_factors(data)
 #' }
 #'
 #' @importFrom magrittr %>%
@@ -64,10 +64,17 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
       Value = c(risk1_mean, risk2_mean),
       inflation_value = inflation_value
     )
+    max_abs_risk <- max(abs(df_plot$Value))
+
+    sec_breaks <- pretty(c(-max_abs_risk, max_abs_risk))
+    sec_breaks_scaled <- sec_breaks / max_abs_risk
+    sec_breaks_scaled <- sec_breaks_scaled[sec_breaks_scaled >= -1 & sec_breaks_scaled <= 1]
+    gridlines_y <- inflation_value + sec_breaks_scaled * max_abs_risk
 
     farben <- c("Upside Risks" = "#1c355e", "Downside Risks" = "#0067ab")
 
     p <- ggplot2::ggplot() +
+      ggplot2::geom_hline(yintercept = gridlines_y, color = "#a2a9ad", size = 0.3) +
       ggplot2::geom_rect(data = df_plot[1, ],
                          ggplot2::aes(xmin = 0.7, xmax = 1.3,
                                       ymin = inflation_value,
@@ -83,10 +90,17 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
       ggplot2::geom_point(ggplot2::aes(x = 1, y = inflation_value,
                                        text = base::paste0("Average Inflation Expectation: ", base::round(inflation_value, 2))),
                           color = "#a2a9ad", size = 2) +
-      ggplot2::geom_hline(yintercept = inflation_value, linetype = "dashed") +
+      ggplot2::geom_hline(yintercept = inflation_value, linetype = "dashed", color = "#a2a9ad", size = 1) +
       ggplot2::scale_fill_manual(values = farben) +
       ggplot2::scale_x_continuous(breaks = 1, labels = "Risks") +
-      ggplot2::scale_y_continuous(name = ylab) +
+      ggplot2::scale_y_continuous(
+        name = ylab,
+        sec.axis = ggplot2::sec_axis(
+          trans = ~ (. - inflation_value) / max_abs_risk,
+          name = "Risk Weight",
+          breaks = sec_breaks_scaled,
+          labels = scales::number_format(accuracy = 0.1)(sec_breaks_scaled)
+        )) +
       ggplot2::labs(x = xlab, title = title, fill = "") +
       ggplot2::theme_minimal() +
       ggplot2::theme(

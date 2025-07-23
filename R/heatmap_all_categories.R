@@ -105,7 +105,7 @@ heatmap_all_categories <- function(data, category1, category2, rel_cols = c(10,1
   )) +
     ggplot2::geom_tile(color = "white") +
     ggplot2::facet_wrap(~Month, ncol = 2) +
-    ggplot2::scale_fill_gradient(low = "white", high = "darkred") +
+    ggplot2::scale_fill_gradient(low = "white", high = "#1c355e") +
     ggplot2::theme_minimal(base_size = 12) +
     ggplot2::labs(
       x = category1,
@@ -114,9 +114,14 @@ heatmap_all_categories <- function(data, category1, category2, rel_cols = c(10,1
       fill = "Median"
     ) +
     ggplot2::theme(
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      text = ggplot2::element_text(family = "Arial"),
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, family = "Arial"),
+      axis.text.y = ggplot2::element_text(family = "Arial"),
+      axis.title = ggplot2::element_text(family = "Arial"),
+      plot.title = ggplot2::element_text(family = "Arial"),
       panel.spacing = grid::unit(2, "lines")
     )
 
-  plotly::ggplotly(p, tooltip = "text")
+  plotly::ggplotly(p, tooltip = "text") |>
+    plotly::layout(font = list(family = "Arial"))
 }

@@ -14,7 +14,7 @@
 #' \dontrun{
 #' path <- load_participant_files()
 #' data <- readxl::read_excel(path)
-#' hover_boxplot(data, rel_cols = c(10,12,14))
+#' hover_violin(data, rel_cols = c(10,12,14))
 #' }
 #'
 #' @author Ole Paech
@@ -54,12 +54,16 @@ hover_violin <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (
 
   data_long <- dplyr::left_join(data_long, stats_table, by = "Month")
 
-  plot <- plotly::plot_ly()
+  # Definiere Farbpalette
+  farben <- c("#1c355e", "#0067ab", "#559ad1", "#2a588c", "#7fb1d6", "#cce1ee")
 
+  plot <- plotly::plot_ly()
   months <- unique(data_long$Month)
 
-  for (m in months) {
+  for (i in seq_along(months)) {
+    m <- months[i]
     month_data <- dplyr::filter(data_long, Month == m)
+    farbe <- farben[(i - 1) %% length(farben) + 1]
 
     hover_texts <- paste0(
       "Rate: ", round(month_data$Rate, 2), "<br>",
@@ -80,8 +84,10 @@ hover_violin <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (
       box = list(visible = TRUE),
       meanline = list(visible = TRUE),
       opacity = 0.6,
-      line = list(color = "black"),
+      fillcolor = farbe,
+      line = list(color = "#a2a9ad"),
       points = "all",
+      marker = list(color = farbe),
       text = hover_texts,
       hoverinfo = "text"
     )
@@ -91,9 +97,20 @@ hover_violin <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (
 
   plot <- plotly::layout(
     plot,
-    yaxis = list(title = ylab),
-    xaxis = list(title = xlab, categoryorder = "array", categoryarray = category_order),
-    title = title
+    yaxis = list(
+      title = ylab,
+      tickfont = list(family = "Arial"),
+      titlefont = list(family = "Arial")
+    ),
+    xaxis = list(
+      title = xlab,
+      categoryorder = "array",
+      categoryarray = category_order,
+      tickfont = list(family = "Arial"),
+      titlefont = list(family = "Arial")
+    ),
+    title = list(text = title, font = list(family = "Arial")),
+    font = list(family = "Arial")
   )
 
   plot

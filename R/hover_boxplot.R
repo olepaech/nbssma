@@ -53,6 +53,9 @@ hover_boxplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Media
       .groups = "drop"
     )
 
+  # Farben für Boxen (Farbpalette beliebig erweiterbar)
+  farben <- c("#1c355e", "#0067ab", "#559ad1", "#2a588c", "#7fb1d6", "#cce1ee")
+
   plot <- plotly::plot_ly()
 
   for (i in seq_len(nrow(stats))) {
@@ -73,8 +76,8 @@ hover_boxplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Media
       x = stats$Month[i],
       type = "box",
       name = stats$Month[i],
-      marker = list(color = "rgba(0,0,0,0.4)"),
-      line = list(color = "steelblue"),
+      fillcolor = farben[(i - 1) %% length(farben) + 1],
+      line = list(color = "#A2a9ad"),
       text = hover_text,
       hoverinfo = text,
       boxpoints = FALSE
@@ -85,9 +88,20 @@ hover_boxplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Media
 
   plot <- plotly::layout(
     plot,
-    yaxis = list(title = ylab),
-    xaxis = list(title = xlab, categoryorder = "array", categoryarray = category_order),
-    title = title
+    yaxis = list(
+      title = ylab,
+      tickfont = list(family = "Arial"),
+      titlefont = list(family = "Arial")
+    ),
+    xaxis = list(
+      title = xlab,
+      categoryorder = "array",
+      categoryarray = category_order,
+      tickfont = list(family = "Arial"),
+      titlefont = list(family = "Arial")
+    ),
+    title = list(text = title, font = list(family = "Arial")),
+    font = list(family = "Arial")
   )
 
   plot

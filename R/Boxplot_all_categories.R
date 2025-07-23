@@ -83,7 +83,8 @@ boxplot_categories <- function(data, category, rel_cols = c(10,12,14), xlab = ""
 
   data_long <- data_long |>
     dplyr::mutate(Month = factor(Month, levels = month_levels))
-
+  my_colors <- c("#1c355e", "#0067ab", "#cce1ee", "#a5835a", "#74253e",
+                 "#00594f", "#d15f27", "#c7932c", "#a2a9ad")
   p <- ggplot2::ggplot(
     data_long,
     ggplot2::aes(x = .data[[category_col]], y = Rate, fill = .data[[category_col]])
@@ -92,11 +93,13 @@ boxplot_categories <- function(data, category, rel_cols = c(10,12,14), xlab = ""
     ggplot2::facet_wrap(~ Month) +
     ggplot2::labs(x = xlab, y = ylab, fill = category, title = title) +
     ggplot2::theme_minimal(base_size = 14) +
+    ggplot2::scale_fill_manual(values = my_colors) +
     ggplot2::theme(
+      text = ggplot2::element_text(family = "Arial"),
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
-      legend.position = "right"
+      legend.position = "right",
+      strip.text = ggplot2::element_text(family = "Arial")  # Facet-Titel Schriftart
     )
-
   plotly::ggplotly(p, tooltip = "text")
 }
