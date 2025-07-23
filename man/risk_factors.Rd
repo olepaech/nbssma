@@ -7,8 +7,8 @@
 risk_factors(
   df,
   infl_col = c(16),
-  upside_col = c(17:21),
-  downside_col = c(23:27),
+  upside_col = c(17:22),
+  downside_col = c(24:29),
   xlab = "",
   ylab = "Average Inflation Expectation",
   title = ""

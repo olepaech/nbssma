@@ -7,11 +7,11 @@
 inflation_risk_history(
   files_with_labels,
   infl_col = c(16),
-  upside_col = c(17:21),
-  downside_col = c(23:27),
-  xlab = "",
+  upside_col = c(17:22),
+  downside_col = c(24:29),
+  xlab = "Survey Date",
   ylab = "Average Inflation Expectations (in \%)",
-  title = "Development of Inflation Projections and percieved Risks"
+  title = "Development of Inflation Projections and perceived Risks"
 )
 }
 \arguments{
@@ -41,8 +41,8 @@ in relation to inflation expectations using a stacked bar plot.
 }
 \examples{
 \dontrun{
-files <- prepare_file_list(c("May 25", "Jun 25"), infl_col = c(16), upside_col = c(17:21), downside_col = c(23:27))
-inflation_risk_history(files)
+files <- prepare_file_list(c("May 25", "Jun 25"))
+inflation_risk_history(files, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29))
 }
 
 }

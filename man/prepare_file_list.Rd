@@ -4,7 +4,7 @@
 \alias{prepare_file_list}
 \title{Prepare a named list of file paths}
 \usage{
-prepare_file_list(month_labels = c("May 25", "Jun 25"))
+prepare_file_list(month_labels = NULL)
 }
 \arguments{
 \item{month_labels}{A character vector of month labels to load (e.g., c("May 25", "Jun 25")).}

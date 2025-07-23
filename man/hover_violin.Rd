@@ -33,7 +33,7 @@ Generates a Plotly violin-plot with median and percentile statistics for NBS sur
 \dontrun{
 path <- load_participant_files()
 data <- readxl::read_excel(path)
-hover_boxplot(data, rel_cols = c(10,12,14))
+hover_violin(data, rel_cols = c(10,12,14))
 }
 
 }
