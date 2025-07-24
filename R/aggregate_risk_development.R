@@ -37,10 +37,10 @@ aggregate_risk_development <- function(file_paths_named_list,
 
   importance_map <- c(
     "Absolutely no relevance" = 0,
-    "Not so Important" = 1,
-    "Moderate" = 2,
-    "Important" = 3,
-    "Very Important" = 4
+    "Not so Important" = 0.5,
+    "Moderate" = 1.0,
+    "Important" = 1.5,
+    "Very Important" = 2.0
   )
 
   process_file <- function(path, label) {
@@ -68,7 +68,6 @@ aggregate_risk_development <- function(file_paths_named_list,
   all_data <- purrr::map2_dfr(file_paths_named_list, names(file_paths_named_list), process_file) %>%
     dplyr::mutate(Source = factor(Source, levels = names(file_paths_named_list)))
 
-  # Summe Upside & Downside pro Survey-Date
   agg_data <- all_data %>%
     dplyr::group_by(Source) %>%
     dplyr::summarise(

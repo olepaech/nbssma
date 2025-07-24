@@ -108,7 +108,7 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_c
       ggplot2::geom_hline(yintercept = inflation_value, linetype = "dashed", linewidth = 1.1) +
       ggplot2::geom_point(ggplot2::aes(x = 1, y = inflation_value,
                                        text = paste0("Average Inflation Expectation: ", round(inflation_value, 2))),
-                          color = "transparent") +
+  +                        color = "transparent") +
       ggplot2::annotate("text",
                         x = 1,
                         y = max(df_plot$ymax[df_plot$Group == "Upside Risks"]) + 0.5,

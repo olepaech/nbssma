@@ -36,10 +36,10 @@
 risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29), xlab = "Survey Date") {
   importance_map <- c(
     "Absolutely no relevance" = 0,
-    "Not so Important" = 1,
-    "Moderate" = 2,
-    "Important" = 3,
-    "Very Important" = 4
+    "Not so Important" = 0.5,
+    "Moderate" = 1.0,
+    "Important" = 1.5,
+    "Very Important" = 2.0
   )
 
   if (!type %in% c("Upside", "Downside")) {
@@ -58,7 +58,7 @@ risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c
           as.numeric()
       ) %>%
       dplyr::select(Inflation, upside_col, downside_col) %>%
-      dplyr::mutate(dplyr::across(2:13, ~ importance_map[.])) %>%
+      dplyr::mutate(dplyr::across(2:(length(upside_col)+length(downside_col)+1), ~ importance_map[.])) %>%
       dplyr::mutate(Source = label)
 
     return(df)
@@ -70,11 +70,11 @@ risk_share_bars <- function(file_paths_named_list, type = "Upside", infl_col = c
     dplyr::mutate(Source = factor(Source, levels = names(file_paths_named_list)))
 
   if (type == "Upside") {
-    selected_cols <- 2:7
+    selected_cols <- 2:(length(upside_col)+1)
     prefix <- "Upside"
     title <- "Composition of Upside Risk Over Time"
   } else {
-    selected_cols <- 8:13
+    selected_cols <- (length(upside_col)+2):(length(upside_col)+length(downside_col)+1)
     prefix <- "Downside"
     title <- "Composition of Downside Risk Over Time"
   }

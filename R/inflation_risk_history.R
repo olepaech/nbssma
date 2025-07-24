@@ -66,7 +66,7 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
                               as.numeric()
         ) %>%
           dplyr::select(Inflation, upside_col, downside_col) %>%
-          dplyr::mutate(dplyr::across(2:13, ~ importance_map[.])) %>%
+          dplyr::mutate(dplyr::across(2:(length(upside_col)+length(downside_col)+1), ~ importance_map[.])) %>%
           dplyr::mutate(Source = label)
 
         return(df)
@@ -86,8 +86,8 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         dplyr::group_by(Source) %>%
         dplyr::summarise(
           inflation_exp = mean(Inflation, na.rm = TRUE),
-          dplyr::across(2:7, ~ mean(., na.rm = TRUE), .names = "Upside_{.col}"),
-          dplyr::across(8:13, ~ mean(., na.rm = TRUE), .names = "Downside_{.col}")
+          dplyr::across(2:(length(upside_col)+1), ~ mean(., na.rm = TRUE), .names = "Upside_{.col}"),
+          dplyr::across((length(upside_col)+2):(length(upside_col)+length(downside_col)+1), ~ mean(., na.rm = TRUE), .names = "Downside_{.col}")
         )
 
       upside <- summary_data %>%
