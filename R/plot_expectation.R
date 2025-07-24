@@ -20,13 +20,15 @@
 #'
 #' @examples
 #' \dontrun{
-#' plot_dfr_expectations(my_data, rel_col = 10)
+#' path <- load_participant_files()
+#' data <- readxl::read_excel(path)
+#' plot_dfr_expectations(data)
 #' }
 #'
 #' @author Ole Paech
 #'
 #' @export
-plot_dfr_expectations <- function(data, rel_col) {
+plot_dfr_expectations <- function(data, rel_col = c(10)) {
   get_current_dfr <- function() {
     url <- "https://tradingeconomics.com/euro-area/indicators"
     page <- rvest::read_html(url)
@@ -75,7 +77,6 @@ plot_dfr_expectations <- function(data, rel_col) {
     )) +
     ggplot2::scale_y_continuous(
       breaks = function(x) base::floor(base::min(x)):base::ceiling(base::max(x)),
-      expand = scales::expansion(mult = c(0, 0.05))
     ) +
     ggplot2::labs(
       title = paste0(
