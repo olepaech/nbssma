@@ -21,7 +21,7 @@ and visualizes the direction of expected changes.
 }
 \examples{
 \dontrun{
-path <- load_participant_files()
+path <- nbssma::load_participant_files()
 data <- readxl::read_excel(path)
 plot_dfr_expectations(data)
 }
