@@ -27,9 +27,13 @@
 #' data <- readxl::read_excel(path)
 #' risk_bubbles(data)
 #' }
-risk_bubbles <- function(data, upside = 17:22, downside = 24:29, xlab = "Risk Type",
-                         ylab = "Avg. Importance (0 = low, 4 = high)",
-                         title = "Upside and Downside Risk Composition") {
+risk_bubble <- function(data,
+                        upside = 17:22,
+                        downside = 24:29,
+                        xlab = "Risk Type",
+                        ylab = "Avg. Importance (0 = low, 4 = high)",
+                        title = "Upside and Downside Risk Composition") {
+
   risks_up <- stringr::str_remove(names(data)[upside], "\\s*2$")
   risks_down <- stringr::str_remove(names(data)[downside], "\\s*2$")
 
@@ -42,24 +46,26 @@ risk_bubbles <- function(data, upside = 17:22, downside = 24:29, xlab = "Risk Ty
 
   mapping <- c(
     "Absolutely no relevance" = 0,
-    "Not so Important" = 1,
-    "Moderate" = 2,
-    "Important" = 3,
-    "Very Important" = 4
+    "Not so Important" = 0.5,
+    "Moderate" = 1.0,
+    "Important" = 1.5,
+    "Very Important" = 2.0
   )
 
   df_clean <- data_renamed |>
-    dplyr::mutate(dplyr::across(
-      dplyr::all_of(c(risks_up, risks_down)),
-      ~ mapping[base::trimws(base::as.character(.))],
-      .names = "num_{.col}"
-    ))
+    dplyr::mutate(
+      dplyr::across(
+        dplyr::all_of(c(risks_up, risks_down)),
+        ~ mapping[trimws(as.character(.))],
+        .names = "num_{.col}"
+      )
+    )
 
   summary_up <- df_clean |>
     dplyr::select(dplyr::all_of(paste0("num_", risks_up))) |>
     tidyr::pivot_longer(cols = dplyr::everything(), names_to = "category", values_to = "value") |>
     dplyr::group_by(category) |>
-    dplyr::summarise(avg_importance = base::mean(value, na.rm = TRUE), .groups = "drop") |>
+    dplyr::summarise(avg_importance = mean(value, na.rm = TRUE), .groups = "drop") |>
     dplyr::mutate(
       category_clean = stringr::str_remove(category, "^num_up_"),
       group = "Upside"
@@ -69,17 +75,16 @@ risk_bubbles <- function(data, upside = 17:22, downside = 24:29, xlab = "Risk Ty
     dplyr::select(dplyr::all_of(paste0("num_", risks_down))) |>
     tidyr::pivot_longer(cols = dplyr::everything(), names_to = "category", values_to = "value") |>
     dplyr::group_by(category) |>
-    dplyr::summarise(avg_importance = base::mean(value, na.rm = TRUE), .groups = "drop") |>
+    dplyr::summarise(avg_importance = mean(value, na.rm = TRUE), .groups = "drop") |>
     dplyr::mutate(
       category_clean = stringr::str_remove(category, "^num_down_"),
       group = "Downside"
     )
 
   summary_combined <- dplyr::bind_rows(summary_up, summary_down)
-  summary_combined$category <- base::factor(
-    summary_combined$category,
-    levels = base::unique(summary_combined$category)
-  )
+
+  # Für Farbe und Legende die sauberen Kategorien nutzen
+  summary_combined$category_clean <- factor(summary_combined$category_clean, levels = unique(summary_combined$category_clean))
 
   my_colors <- c(
     "#1c355e", "#0067ab", "#cce1ee", "#a5835a",
@@ -89,10 +94,9 @@ risk_bubbles <- function(data, upside = 17:22, downside = 24:29, xlab = "Risk Ty
   plot <- ggplot2::ggplot(summary_combined, ggplot2::aes(
     x = group,
     y = avg_importance,
-    color = category,
-    tooltip = paste0("Category: ", category, "\nImportance: ", base::round(avg_importance, 2))
+    color = category_clean
   )) +
-    ggiraph::geom_point_interactive(size = 6, alpha = 0.8, position = ggplot2::position_jitter(width = 0.2)) +
+    ggplot2::geom_point(size = 6, alpha = 0.8, position = ggplot2::position_dodge(width = 0)) +
     ggplot2::scale_color_manual(values = my_colors) +
     ggplot2::labs(
       title = title,
@@ -100,7 +104,7 @@ risk_bubbles <- function(data, upside = 17:22, downside = 24:29, xlab = "Risk Ty
       y = ylab,
       color = "Category"
     ) +
-    ggplot2::theme_minimal(base_family = "Arial") +
+    ggplot2::theme_minimal() +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(size = 12),
       legend.position = "right"
