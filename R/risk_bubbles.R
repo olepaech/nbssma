@@ -1,31 +1,35 @@
-#' Create Static Risk Bubble Chart
+#' Interactive Bubble Chart of Upside and Downside Risk Perceptions
 #'
-#' This function generates a bubble chart showing the average perceived importance of
-#' upside and downside risks based on participant responses.
+#' Converts textual survey responses on perceived risks into numeric scores,
+#' calculates average importance for each category, and visualizes them
+#' as an interactive bubble chart with tooltips.
 #'
-#' @param data A data frame containing the survey responses with labeled risk columns.
-#' @param upside Integer indices indicating the columns representing upside risks.
-#' @param downside Integer indices indicating the columns representing downside risks.
+#' @param data A data frame containing the survey responses.
+#' @param upside Column indices or names for upside risks. Default: 17:22
+#' @param downside Column indices or names for downside risks. Default: 24:29
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param title Title of the plot.
 #'
-#' @return A ggplot object showing the static risk bubble chart.
+#' @return An interactive ggiraph bubble plot.
+#'
+#' @importFrom dplyr mutate across all_of select summarise group_by bind_rows
+#' @importFrom tidyr pivot_longer
+#' @importFrom stringr str_remove
+#' @importFrom ggplot2 ggplot aes labs scale_color_manual geom_point theme_minimal theme element_text position_jitter
+#' @importFrom ggiraph geom_point_interactive girafe
+#'
+#' @export
+#'
 #' @examples
 #' \dontrun{
-#' path <- nbssma::load_participant_files()
+#' path <- load_participant_files()
 #' data <- readxl::read_excel(path)
-#' static_risk_bubble(data)
+#' risk_bubbles(data)
 #' }
-#' @author Ole Paech
-#' @export
-static_risk_bubble <- function(data,
-                               upside = 17:22,
-                               downside = 24:29,
-                               xlab = "Risk Type",
-                               ylab = "Avg. Importance (0 = low, 4 = high)",
-                               title = "Upside and Downside Risk Composition") {
-
+risk_bubbles <- function(data, upside = 17:22, downside = 24:29, xlab = "Risk Type",
+                         ylab = "Avg. Importance (0 = low, 4 = high)",
+                         title = "Upside and Downside Risk Composition") {
   risks_up <- stringr::str_remove(names(data)[upside], "\\s*2$")
   risks_down <- stringr::str_remove(names(data)[downside], "\\s*2$")
 
@@ -45,19 +49,17 @@ static_risk_bubble <- function(data,
   )
 
   df_clean <- data_renamed |>
-    dplyr::mutate(
-      dplyr::across(
-        dplyr::all_of(c(risks_up, risks_down)),
-        ~ mapping[trimws(as.character(.))],
-        .names = "num_{.col}"
-      )
-    )
+    dplyr::mutate(dplyr::across(
+      dplyr::all_of(c(risks_up, risks_down)),
+      ~ mapping[base::trimws(base::as.character(.))],
+      .names = "num_{.col}"
+    ))
 
   summary_up <- df_clean |>
     dplyr::select(dplyr::all_of(paste0("num_", risks_up))) |>
     tidyr::pivot_longer(cols = dplyr::everything(), names_to = "category", values_to = "value") |>
     dplyr::group_by(category) |>
-    dplyr::summarise(avg_importance = mean(value, na.rm = TRUE), .groups = "drop") |>
+    dplyr::summarise(avg_importance = base::mean(value, na.rm = TRUE), .groups = "drop") |>
     dplyr::mutate(
       category_clean = stringr::str_remove(category, "^num_up_"),
       group = "Upside"
@@ -67,16 +69,17 @@ static_risk_bubble <- function(data,
     dplyr::select(dplyr::all_of(paste0("num_", risks_down))) |>
     tidyr::pivot_longer(cols = dplyr::everything(), names_to = "category", values_to = "value") |>
     dplyr::group_by(category) |>
-    dplyr::summarise(avg_importance = mean(value, na.rm = TRUE), .groups = "drop") |>
+    dplyr::summarise(avg_importance = base::mean(value, na.rm = TRUE), .groups = "drop") |>
     dplyr::mutate(
       category_clean = stringr::str_remove(category, "^num_down_"),
       group = "Downside"
     )
 
   summary_combined <- dplyr::bind_rows(summary_up, summary_down)
-
-  # Für Farbe und Legende die sauberen Kategorien nutzen
-  summary_combined$category_clean <- factor(summary_combined$category_clean, levels = unique(summary_combined$category_clean))
+  summary_combined$category <- base::factor(
+    summary_combined$category,
+    levels = base::unique(summary_combined$category)
+  )
 
   my_colors <- c(
     "#1c355e", "#0067ab", "#cce1ee", "#a5835a",
@@ -86,9 +89,10 @@ static_risk_bubble <- function(data,
   plot <- ggplot2::ggplot(summary_combined, ggplot2::aes(
     x = group,
     y = avg_importance,
-    color = category_clean
+    color = category,
+    tooltip = paste0("Category: ", category, "\nImportance: ", base::round(avg_importance, 2))
   )) +
-    ggplot2::geom_point(size = 6, alpha = 0.8, position = ggplot2::position_dodge(width = 0)) +
+    ggiraph::geom_point_interactive(size = 6, alpha = 0.8, position = ggplot2::position_jitter(width = 0.2)) +
     ggplot2::scale_color_manual(values = my_colors) +
     ggplot2::labs(
       title = title,
@@ -96,11 +100,11 @@ static_risk_bubble <- function(data,
       y = ylab,
       color = "Category"
     ) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_family = "Arial") +
     ggplot2::theme(
       axis.text.x = ggplot2::element_text(size = 12),
       legend.position = "right"
     )
 
-  return(plot)
+  ggiraph::girafe(ggobj = plot)
 }
