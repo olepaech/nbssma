@@ -20,7 +20,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' path <- load_participant_files()
+#' path <- nbssma::load_participant_files()
 #' data <- readxl::read_excel(path)
 #' plot_dfr_expectations(data)
 #' }
@@ -87,7 +87,7 @@ plot_dfr_expectations <- function(data, rel_col = c(10)) {
       x = "Expected Rate Direction",
       y = "Number of Respondents"
     ) +
-    ggplot2::theme_minimal(base_family = "Arial")
+    ggplot2::theme_minimal()
 
   return(p)
 }
