@@ -32,8 +32,14 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
                          xlab = "", ylab = "Average Inflation Expectation", title = "") {
   suppressWarnings({
     inflation_col <- base::names(df)[infl_col]
-    risks_1 <- base::gsub("2", "", base::names(df)[upside_col])
-    risks_2 <- base::gsub("2", "", base::names(df)[downside_col])
+
+    risks_1 <- names(df)[upside_col]
+    risks_2 <- names(df)[downside_col]
+    risks_1 <- gsub("2", "", risks_1)
+    risks_2 <- gsub("2", "", risks_2)
+    risks_1 <- paste0("up_", risks_1)
+    risks_2 <- paste0("down_", risks_2)
+
 
     mapping <- c(
       "Absolutely no relevance" = 0,
@@ -43,7 +49,11 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
       "Very Important" = 2.0
     )
 
-    df_clean <- df %>%
+    data_renamed <- df
+    names(data_renamed)[upside_col] <- risks_1
+    names(data_renamed)[downside_col] <- risks_2
+
+    df_clean <- data_renamed %>%
       dplyr::mutate(
         inflation_raw = .[[inflation_col]],
         inflation_clean_char = base::gsub(",", ".", base::gsub("%", "", inflation_raw)),

@@ -108,7 +108,7 @@ aggregate_risk_development <- function(file_paths_named_list,
       text = ggplot2::element_text(size = 14),
       plot.title = ggplot2::element_text(face = "bold", hjust = 0.5),
       legend.position = "right",
-      legend.title = element_blank()
+      legend.title = ggplot2::element_blank()
     )
 
   return(plotly::ggplotly(p, tooltip = "text"))
