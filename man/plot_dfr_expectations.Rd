@@ -4,7 +4,12 @@
 \alias{plot_dfr_expectations}
 \title{Plot expectations for the ECB Deposit Facility Rate}
 \usage{
-plot_dfr_expectations(data, rel_col = c(10))
+plot_dfr_expectations(
+  data,
+  rel_col = c(10),
+  xlab = "Expected Rate Direction",
+  ylab = "Number of Respondents"
+)
 }
 \arguments{
 \item{data}{A data frame with expectation values (as character or numeric).}

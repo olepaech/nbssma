@@ -8,7 +8,8 @@ bar_line(
   data,
   rel_cols = c(10, 12, 14),
   title1 = "Median (left)",
-  title2 = "Interquartile Range (right)"
+  title2 = "Interquartile Range (right)",
+  title = ""
 )
 }
 \arguments{

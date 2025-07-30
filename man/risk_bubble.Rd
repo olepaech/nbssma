@@ -9,7 +9,7 @@ risk_bubble(
   upside = 17:22,
   downside = 24:29,
   xlab = "Risk Type",
-  ylab = "Avg. Importance (0 = low, 4 = high)",
+  ylab = "Avg. Importance (0 = low, 2 = high)",
   title = "Upside and Downside Risk Composition"
 )
 }
