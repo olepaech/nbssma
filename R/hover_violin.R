@@ -54,8 +54,8 @@ hover_violin <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (
 
   data_long <- dplyr::left_join(data_long, stats_table, by = "Month")
 
-  # Definiere Farbpalette
-  farben <- c("#1c355e", "#0067ab", "#559ad1", "#2a588c", "#7fb1d6", "#cce1ee")
+
+  farben <- c("#1c355e", "#0067ab", "#cce1ee", "#559ad1", "#2a588c", "#7fb1d6")
 
   plot <- plotly::plot_ly()
   months <- unique(data_long$Month)
@@ -98,19 +98,14 @@ hover_violin <- function(data, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (
   plot <- plotly::layout(
     plot,
     yaxis = list(
-      title = ylab,
-      tickfont = list(family = "Arial"),
-      titlefont = list(family = "Arial")
+      title = ylab
     ),
     xaxis = list(
       title = xlab,
       categoryorder = "array",
-      categoryarray = category_order,
-      tickfont = list(family = "Arial"),
-      titlefont = list(family = "Arial")
+      categoryarray = category_order
     ),
-    title = list(text = title, font = list(family = "Arial")),
-    font = list(family = "Arial")
+    title = list(text = title)
   )
 
   plot

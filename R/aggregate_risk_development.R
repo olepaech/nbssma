@@ -103,10 +103,10 @@ aggregate_risk_development <- function(file_paths_named_list,
       y = ylab,
       fill = "Risk Type"
     ) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = 11) +
     ggplot2::theme(
-      text = ggplot2::element_text(size = 14),
-      plot.title = ggplot2::element_text(face = "bold", hjust = 0.5),
+      text = ggplot2::element_text(size = 11),
+      plot.title = ggplot2::element_text(hjust = 0.5),
       legend.position = "right",
       legend.title = ggplot2::element_blank()
     )

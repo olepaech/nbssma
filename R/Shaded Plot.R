@@ -110,8 +110,7 @@ shaded_plot <- function(data, rel_cols = c(10, 12, 14), xlab = "", ylab = "Rate 
         yaxis = list(title = ylab),
         title = title,
         hovermode = 'x unified',
-        showlegend = FALSE,
-        font = list(family = "Arial")  # <-- Schriftart auf Arial gesetzt
+        showlegend = TRUE
       )
   })
 }

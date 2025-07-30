@@ -31,7 +31,7 @@ risk_bubble <- function(data,
                         upside = 17:22,
                         downside = 24:29,
                         xlab = "Risk Type",
-                        ylab = "Avg. Importance (0 = low, 4 = high)",
+                        ylab = "Avg. Importance (0 = low, 2 = high)",
                         title = "Upside and Downside Risk Composition") {
 
   risks_up <- stringr::str_remove(names(data)[upside], "\\s*2$")
@@ -83,8 +83,11 @@ risk_bubble <- function(data,
 
   summary_combined <- dplyr::bind_rows(summary_up, summary_down)
 
-  # Für Farbe und Legende die sauberen Kategorien nutzen
-  summary_combined$category_clean <- factor(summary_combined$category_clean, levels = unique(summary_combined$category_clean))
+  summary_combined$tooltip <- paste0(
+    "Category: ", summary_combined$category_clean, "<br>",
+    "Group: ", summary_combined$group, "<br>",
+    "Avg. Importance: ", round(summary_combined$avg_importance, 2)
+  )
 
   my_colors <- c(
     "#1c355e", "#0067ab", "#cce1ee", "#a5835a",
@@ -94,9 +97,11 @@ risk_bubble <- function(data,
   plot <- ggplot2::ggplot(summary_combined, ggplot2::aes(
     x = group,
     y = avg_importance,
-    color = category_clean
+    color = category_clean,
+    tooltip = tooltip,
+    data_id = category_clean
   )) +
-    ggplot2::geom_point(size = 6, alpha = 0.8, position = ggplot2::position_dodge(width = 0)) +
+    ggiraph::geom_point_interactive(size = 6, alpha = 0.85, position = ggplot2::position_dodge(width = 0)) +
     ggplot2::scale_color_manual(values = my_colors) +
     ggplot2::labs(
       title = title,
@@ -104,9 +109,10 @@ risk_bubble <- function(data,
       y = ylab,
       color = "Category"
     ) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = 11) +
     ggplot2::theme(
-      axis.text.x = ggplot2::element_text(size = 12),
+      axis.text.x = ggplot2::element_text(size = 11),
+      plot.title = ggplot2::element_text(hjust = 0.5),
       legend.position = "right"
     )
 

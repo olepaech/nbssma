@@ -13,7 +13,7 @@
 #'
 #' @author Ole Paech
 #' @export
-bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", title2 = "Interquartile Range (right)") {
+bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", title2 = "Interquartile Range (right)", title = "") {
   suppressWarnings({
     relevant_cols <- names(data)[rel_cols]
 
@@ -79,24 +79,24 @@ bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", tit
       ) |>
       plotly::layout(
         title = list(
-          text = "",  # Optional: Plot-Titel hier setzen
-          font = list(family = "Arial", size = 18)
+          text = title,
+          font = list(size = 11)
         ),
         xaxis = list(
           tickmode = 'array',
           tickvals = x_vals,
           ticktext = x_labels,
           title = '',
-          titlefont = list(family = "Arial", size = 16),
-          tickfont = list(family = "Arial", size = 12)
+          titlefont = list(size = 13),
+          tickfont = list(size = 11)
         ),
         yaxis = list(
           title = title1,
           side = "left",
           showgrid = FALSE,
           zeroline = FALSE,
-          titlefont = list(family = "Arial", size = 16),
-          tickfont = list(family = "Arial", size = 12)
+          titlefont = list(size = 13),
+          tickfont = list(size = 11)
         ),
         yaxis2 = list(
           title = title2,
@@ -104,8 +104,8 @@ bar_line <- function(data, rel_cols = c(10,12,14), title1 = "Median (left)", tit
           side = "right",
           showgrid = FALSE,
           zeroline = FALSE,
-          titlefont = list(family = "Arial", size = 16),
-          tickfont = list(family = "Arial", size = 12)
+          titlefont = list(size = 13),
+          tickfont = list(size = 11)
         ),
         legend = FALSE
       )

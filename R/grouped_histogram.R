@@ -142,12 +142,12 @@ grouped_histogram <- function(data, rel_cols = c(10,12,14), xlab = "Expected Rat
                          show.legend = FALSE) +
       ggplot2::scale_fill_manual(values = Colors, labels = months_sorted) +
       ggplot2::labs(x = xlab, y = ylab, title = title, fill = "Month") +
-      ggplot2::theme_minimal(base_size = 14) +
+      ggplot2::theme_minimal(base_size = 11) +
       ggplot2::theme(
-        text = ggplot2::element_text(family = "Arial"),
-        axis.title = ggplot2::element_text(family = "Arial"),
-        axis.text = ggplot2::element_text(family = "Arial"),
-        plot.title = ggplot2::element_text(family = "Arial")
+        text = ggplot2::element_text(size = 11),
+        axis.title = ggplot2::element_text(),
+        axis.text = ggplot2::element_text(),
+        plot.title = ggplot2::element_text(hjust = 0.5)
       )
 
     plotly::ggplotly(p, tooltip = "text") |>

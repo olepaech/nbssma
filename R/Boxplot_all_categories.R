@@ -33,9 +33,9 @@
 #' @export
 boxplot_categories <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (in %)", title = "") {
   category_map <- list(
-    "Profession" = "What is your profession?",
-    "Experience" = "How many years of expertise do you have?",
-    "Nationality" = "What is your nationality?"
+    "Profession" = "What is your profession? (optional)",
+    "Experience" = "How many years of expertise do you have? (optional)",
+    "Nationality" = "What is your nationality? (optional)"
   )
 
   if (!(category %in% names(category_map))) {
@@ -92,14 +92,15 @@ boxplot_categories <- function(data, category, rel_cols = c(10,12,14), xlab = ""
     ggplot2::geom_boxplot(color = "black") +
     ggplot2::facet_wrap(~ Month) +
     ggplot2::labs(x = xlab, y = ylab, fill = category, title = title) +
-    ggplot2::theme_minimal(base_size = 14) +
+    ggplot2::theme_minimal(base_size = 11) +
     ggplot2::scale_fill_manual(values = my_colors) +
     ggplot2::theme(
-      text = ggplot2::element_text(family = "Arial"),
+      text = ggplot2::element_text(),
+      plot.title = ggplot2::element_text(hjust = 0.5),
       axis.text.x = ggplot2::element_blank(),
       axis.ticks.x = ggplot2::element_blank(),
       legend.position = "right",
-      strip.text = ggplot2::element_text(family = "Arial")  # Facet-Titel Schriftart
+      strip.text = ggplot2::element_text()
     )
   plotly::ggplotly(p, tooltip = "text")
 }

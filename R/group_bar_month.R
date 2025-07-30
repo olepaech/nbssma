@@ -34,9 +34,9 @@
 group_bar_month <- function(data, category, rel_cols = c(10,12,14), ylab = "Median Rate (in %)", title = "") {
   suppressWarnings({
     category_map <- list(
-      "Profession" = "What is your profession?",
-      "Experience" = "How many years of expertise do you have?",
-      "Nationality" = "What is your nationality?"
+      "Profession" = "What is your profession? (optional)",
+      "Experience" = "How many years of expertise do you have? (optional)",
+      "Nationality" = "What is your nationality? (optional)"
     )
 
     if (!(category %in% names(category_map))) {
@@ -107,9 +107,9 @@ group_bar_month <- function(data, category, rel_cols = c(10,12,14), ylab = "Medi
 
     plot <- plotly::layout(
       plot,
-      xaxis = list(title = list(text = category, font = list(family = "Arial"))),
-      yaxis = list(title = list(text = ylab, font = list(family = "Arial"))),
-      title = list(text = title, font = list(family = "Arial")),
+      xaxis = list(title = list(text = category)),
+      yaxis = list(title = list(text = ylab)),
+      title = list(text = title),
       barmode = "group"
     )
 

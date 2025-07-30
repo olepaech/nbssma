@@ -36,9 +36,9 @@
 spiderplot_category <- function(data, category, Min = 1, Max = 4, rel_cols = c(10, 12, 14), show_title = FALSE){
   suppressWarnings({
     category_map <- list(
-      "Profession" = "What is your profession?",
-      "Experience" = "How many years of expertise do you have?",
-      "Nationality" = "What is your nationality?"
+      "Profession" = "What is your profession? (optional)",
+      "Experience" = "How many years of expertise do you have? (optional)",
+      "Nationality" = "What is your nationality? (optional)"
     )
 
     if (!(category %in% names(category_map))) {
@@ -98,7 +98,7 @@ spiderplot_category <- function(data, category, Min = 1, Max = 4, rel_cols = c(1
     n_groups <- ncol(radar_df) - 1
 
     plot_colors <- rep(farben, length.out = n_groups)
-    graphics::par(family = "Arial")
+    graphics::par()
 
     fmsb::radarchart(
       radar_df,
@@ -114,7 +114,7 @@ spiderplot_category <- function(data, category, Min = 1, Max = 4, rel_cols = c(1
     )
 
     if (show_title) {
-      graphics::title(main = paste("Median Expectations by", category), family = "Arial")
+      graphics::title(main = paste("Median Expectations by", category))
     }
 
     graphics::legend(

@@ -46,11 +46,10 @@ table_reasons <- function(df, rate_col = c(10, 12, 14), text_col = c(11, 13, 15)
     dplyr::rename_with(~ stringr::str_wrap(., width = 20))
 
   gt::gt(text_df) %>%
-    gt::tab_options(
-      table.font.names = "Arial",
-      table.font.size = 12,
+    gt::tab_options(,
+      table.font.size = 11,
       heading.title.font.weight = "bold",
       heading.subtitle.font.weight = "bold",
-      column_labels.font.weight = "bold"  # <-- macht die Spaltentitel fett
+      column_labels.font.weight = "bold"
     )
 }

@@ -35,9 +35,9 @@
 #' @export
 heatmap_all_categories <- function(data, category1, category2, rel_cols = c(10,12,14), title = "") {
   category_map <- list(
-    "Profession" = "What is your profession?",
-    "Experience" = "How many years of expertise do you have?",
-    "Nationality" = "What is your nationality?"
+    "Profession" = "What is your profession? (optional)",
+    "Experience" = "How many years of expertise do you have? (optional)",
+    "Nationality" = "What is your nationality? (optional)"
   )
 
   if (!(category1 %in% names(category_map) && category2 %in% names(category_map))) {
@@ -106,7 +106,7 @@ heatmap_all_categories <- function(data, category1, category2, rel_cols = c(10,1
     ggplot2::geom_tile(color = "white") +
     ggplot2::facet_wrap(~Month, ncol = 2) +
     ggplot2::scale_fill_gradient(low = "white", high = "#1c355e") +
-    ggplot2::theme_minimal(base_size = 12) +
+    ggplot2::theme_minimal(base_size = 11) +
     ggplot2::labs(
       x = category1,
       y = category2,
@@ -114,14 +114,14 @@ heatmap_all_categories <- function(data, category1, category2, rel_cols = c(10,1
       fill = "Median"
     ) +
     ggplot2::theme(
-      text = ggplot2::element_text(family = "Arial"),
-      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, family = "Arial"),
-      axis.text.y = ggplot2::element_text(family = "Arial"),
-      axis.title = ggplot2::element_text(family = "Arial"),
-      plot.title = ggplot2::element_text(family = "Arial"),
+      text = ggplot2::element_text(),
+      axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+      axis.text.y = ggplot2::element_text(),
+      axis.title = ggplot2::element_text(),
+      plot.title = ggplot2::element_text(hjust = 0.5),
       panel.spacing = grid::unit(2, "lines")
     )
 
   plotly::ggplotly(p, tooltip = "text") |>
-    plotly::layout(font = list(family = "Arial"))
+    plotly::layout()
 }

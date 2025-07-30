@@ -196,12 +196,12 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
         ggplot2::geom_text(
           data = dplyr::filter(totals_df, Type == "Upside"),
           ggplot2::aes(x = x, y = y, label = label),
-          size = 4, vjust = 0, fontface = "bold"
+          size = 4, vjust = 0
         ) +
         ggplot2::geom_text(
           data = dplyr::filter(totals_df, Type == "Downside"),
           ggplot2::aes(x = x, y = y, label = label),
-          size = 4, vjust = 1.2, fontface = "bold"
+          size = 4, vjust = 1.2
         ) +
         ggplot2::scale_x_continuous(
           breaks = 1:length(files_with_labels),
@@ -217,10 +217,10 @@ inflation_risk_history <- function(files_with_labels, infl_col = c(16), upside_c
           fill = "Risk Factor",
           title = title
         ) +
-        ggplot2::theme_minimal() +
+        ggplot2::theme_minimal(base_size = 11) +
         ggplot2::theme(
-          text = ggplot2::element_text(size = 14, family = "Arial"),
-          plot.title = ggplot2::element_text(face = "bold", hjust = 0.5, family = "Arial")
+          text = ggplot2::element_text(),
+          plot.title = ggplot2::element_text(hjust = 0.5)
         )
 
       plotly::ggplotly(p, tooltip = "text")

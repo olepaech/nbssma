@@ -29,7 +29,7 @@
 #'
 #' @export
 aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_col = c(24:29),
-                         xlab = "", ylab = "Average Inflation Expectation", title = "") {
+                                    xlab = "", ylab = "Average Inflation Expectation", title = "") {
   suppressWarnings({
     inflation_col <- base::names(df)[infl_col]
 
@@ -39,7 +39,6 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
     risks_2 <- gsub("2", "", risks_2)
     risks_1 <- paste0("up_", risks_1)
     risks_2 <- paste0("down_", risks_2)
-
 
     mapping <- c(
       "Absolutely no relevance" = 0,
@@ -85,21 +84,35 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
 
     p <- ggplot2::ggplot() +
       ggplot2::geom_hline(yintercept = gridlines_y, color = "#a2a9ad", size = 0.3) +
+
       ggplot2::geom_rect(data = df_plot[1, ],
-                         ggplot2::aes(xmin = 0.7, xmax = 1.3,
-                                      ymin = inflation_value,
-                                      ymax = inflation_value + Value,
-                                      fill = Group),
+                         ggplot2::aes(
+                           xmin = 0.7, xmax = 1.3,
+                           ymin = inflation_value,
+                           ymax = inflation_value + Value,
+                           fill = Group,
+                           text = paste0(Group, ": ", round(Value, 2))
+                         ),
                          color = "black") +
+
       ggplot2::geom_rect(data = df_plot[2, ],
-                         ggplot2::aes(xmin = 0.7, xmax = 1.3,
-                                      ymin = inflation_value - Value,
-                                      ymax = inflation_value,
-                                      fill = Group),
+                         ggplot2::aes(
+                           xmin = 0.7, xmax = 1.3,
+                           ymin = inflation_value - Value,
+                           ymax = inflation_value,
+                           fill = Group,
+                           text = paste0(Group, ": ", round(Value, 2))
+                         ),
                          color = "black") +
-      ggplot2::geom_point(ggplot2::aes(x = 1, y = inflation_value,
-                                       text = base::paste0("Average Inflation Expectation: ", base::round(inflation_value, 2))),
-                          color = "#a2a9ad", size = 2) +
+
+      ggplot2::geom_point(
+        ggplot2::aes(
+          x = 1, y = inflation_value,
+          text = paste0("Average Inflation Expectation: ", round(inflation_value, 2))
+        ),
+        color = "#a2a9ad", size = 2
+      ) +
+
       ggplot2::geom_hline(yintercept = inflation_value, linetype = "dashed", color = "#a2a9ad", size = 1) +
       ggplot2::scale_fill_manual(values = farben) +
       ggplot2::scale_x_continuous(breaks = 1, labels = "Risks") +
@@ -112,9 +125,10 @@ aggregated_risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22),
           labels = scales::number_format(accuracy = 0.1)(sec_breaks_scaled)
         )) +
       ggplot2::labs(x = xlab, title = title, fill = "") +
-      ggplot2::theme_minimal() +
+      ggplot2::theme_minimal(base_size = 11) +
       ggplot2::theme(
-        axis.text.x = ggplot2::element_text(size = 12, face = "bold"),
+        axis.text.x = ggplot2::element_text(size = 11),
+        plot.title = ggplot2::element_text(hjust = 0.5),
         axis.ticks.x = ggplot2::element_blank(),
         legend.position = "right",
         legend.title = ggplot2::element_blank()

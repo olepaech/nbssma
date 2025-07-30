@@ -35,9 +35,9 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
   relevant_cols <- names(data)[rel_cols]
 
   data_clean <- data %>%
-    dplyr::select(`What is your profession?`,
-                  `How many years of expertise do you have?`,
-                  `What is your nationality?`,
+    dplyr::select(`What is your profession? (optional)`,
+                  `How many years of expertise do you have? (optional)`,
+                  `What is your nationality? (optional)`,
                   tidyselect::all_of(relevant_cols)) %>%
     dplyr::mutate(dplyr::across(tidyselect::all_of(relevant_cols),
                                 ~ stringr::str_replace_all(., "%", "") %>%
@@ -57,14 +57,14 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
 
   agg_data <- data_long %>%
     dplyr::filter(
-      !is.na(`What is your profession?`) &
-        !is.na(`How many years of expertise do you have?`) &
-        !is.na(`What is your nationality?`)
+      !is.na(`What is your profession? (optional)`) &
+        !is.na(`How many years of expertise do you have? (optional)`) &
+        !is.na(`What is your nationality? (optional)`)
     ) %>%
     dplyr::group_by(
-      `What is your profession?`,
-      `How many years of expertise do you have?`,
-      `What is your nationality?`,
+      `What is your profession? (optional)`,
+      `How many years of expertise do you have? (optional)`,
+      `What is your nationality? (optional)`,
       Month
     ) %>%
     dplyr::summarise(
@@ -73,9 +73,9 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
       .groups = "drop"
     ) %>%
     dplyr::rename(
-      Profession = `What is your profession?`,
-      Experience = `How many years of expertise do you have?`,
-      Nationality = `What is your nationality?`
+      Profession = `What is your profession? (optional)`,
+      Experience = `How many years of expertise do you have? (optional)`,
+      Nationality = `What is your nationality? (optional)`
     ) %>%
     dplyr::mutate(
       Experience = factor(Experience, levels = c("0 - 5 years", "5 - 15 years", "over 15 years")),
@@ -121,11 +121,10 @@ plot_3d <- function(data, rel_cols = c(10,12,14)) {
       plotly::layout(
         title = list(text = paste("3D Median Expectations –", month_name), font = list(family = "Arial", size = 16)),
         scene = list(
-          xaxis = list(title = "Nationality", titlefont = list(family = "Arial", size = 14)),
-          yaxis = list(title = "Experience", titlefont = list(family = "Arial", size = 14)),
-          zaxis = list(title = "Profession", titlefont = list(family = "Arial", size = 14))
-        ),
-        font = list(family = "Arial", size = 12)
+          xaxis = list(title = "Nationality", titlefont = list(size = 11)),
+          yaxis = list(title = "Experience", titlefont = list(size = 11)),
+          zaxis = list(title = "Profession", titlefont = list(size = 11))
+        )
       )
   })
 

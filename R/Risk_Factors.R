@@ -113,29 +113,30 @@ risk_factors <- function(df, infl_col = c(16), upside_col = c(17:22), downside_c
                         x = 1,
                         y = max(df_plot$ymax[df_plot$Group == "Upside Risks"]) + 0.5,
                         label = "Upside Risk",
-                        size = 4, fontface = "bold", hjust = 0.5) +
+                        size = 4, hjust = 0.5) +
       ggplot2::annotate("text",
                         x = 1,
                         y = min(df_plot$ymin[df_plot$Group == "Downside Risks"]) - 2.2,
                         label = "Downside Risk",
-                        size = 4, fontface = "bold", hjust = 0.5) +
+                        size = 4, hjust = 0.5) +
       ggplot2::scale_fill_manual(values = farben_named) +
       ggplot2::scale_y_continuous(name = ylab,
                                   breaks = seq(
                                     floor(min(df_plot$ymin, na.rm = TRUE)),
                                     ceiling(max(df_plot$ymax, na.rm = TRUE)),
-                                    by = 0.5
+                                    by = 1
                                   )) +
-      ggplot2::theme_minimal() +
+      ggplot2::theme_minimal(base_size = 11) +
       ggplot2::labs(x = xlab, title = title) +
       ggplot2::theme(
-        axis.text.x = ggplot2::element_text(family = "Arial", face = "bold", size = 12),
-        axis.text.y = ggplot2::element_text(family = "Arial", size = 10),
+        axis.text.x = ggplot2::element_text(),
+        axis.text.y = ggplot2::element_text(),
+        plot.title = ggplot2::element_text(hjust = 0.5),
         axis.ticks.x = ggplot2::element_blank(),
         panel.grid.major.x = ggplot2::element_blank(),
         legend.position = "right",
         legend.title = ggplot2::element_blank(),
-        text = ggplot2::element_text(family = "Arial")
+        text = ggplot2::element_text()
       )
 
     plotly::ggplotly(p, tooltip = "text")

@@ -32,9 +32,9 @@
 #' @export
 dotplot <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "Rate (in %)", title = "") {
   category_map <- list(
-    "Profession" = "What is your profession?",
-    "Experience" = "How many years of expertise do you have?",
-    "Nationality" = "What is your nationality?"
+    "Profession" = "What is your profession? (optional)",
+    "Experience" = "How many years of expertise do you have? (optional)",
+    "Nationality" = "What is your nationality? (optional)"
   )
 
   if (!(category %in% names(category_map))) {
@@ -83,18 +83,18 @@ dotplot <- function(data, category, rel_cols = c(10,12,14), xlab = "", ylab = "R
       "Expectation: ", Rate
     )
   )) +
-    ggplot2::geom_jitter(width = 0.2, height = 0.02, size = 3, alpha = 0.8) +
+    ggplot2::geom_point(size = 3, alpha = 1, position = ggplot2::position_dodge2(width = 0.7, preserve = "total", padding = 0)) +
     ggplot2::scale_color_manual(values = my_colors) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = 11) +
     ggplot2::labs(
       x = xlab, y = ylab, title = title,
       color = category
     ) +
     ggplot2::theme(
-    text = ggplot2::element_text(size = 12, family = "Arial"),
-    plot.title = ggplot2::element_text(hjust = 0.5, family = "Arial"),
-    axis.title = ggplot2::element_text(family = "Arial"),
-    axis.text = ggplot2::element_text(family = "Arial")
+    text = ggplot2::element_text(size = 11),
+    plot.title = ggplot2::element_text(hjust = 0.5),
+    axis.title = ggplot2::element_text(),
+    axis.text = ggplot2::element_text()
 )
   plotly::ggplotly(p, tooltip = "text")
 }

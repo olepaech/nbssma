@@ -28,7 +28,7 @@
 #' @author Ole Paech
 #'
 #' @export
-plot_dfr_expectations <- function(data, rel_col = c(10)) {
+plot_dfr_expectations <- function(data, rel_col = c(10), xlab = "Expected Rate Direction", ylab = "Number of Respondents") {
   get_current_dfr <- function() {
     url <- "https://tradingeconomics.com/euro-area/indicators"
     page <- rvest::read_html(url)
@@ -84,10 +84,15 @@ plot_dfr_expectations <- function(data, rel_col = c(10)) {
         month_labels,
         " (Current: ", current_dfr, "%)"
       ),
-      x = "Expected Rate Direction",
-      y = "Number of Respondents"
+      x = xlab,
+      y = ylab
     ) +
-    ggplot2::theme_minimal()
+    ggplot2::theme_minimal(base_size = 11) +
+    ggplot2::theme(
+      text = ggplot2::element_text(),
+      plot.title = ggplot2::element_text(hjust = 0.5)
+    )
+
 
   return(p)
 }

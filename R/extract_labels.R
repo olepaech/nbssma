@@ -24,9 +24,13 @@ extract_label <- function(question) {
       "September" = "Sep", "October" = "Oct", "November" = "Nov", "December" = "Dec"
     )),
     ifelse(
-      stringr::str_detect(question, "long[- ]?run|long term|Long term|Long[- ]?run"),
+      stringr::str_detect(
+        stringr::str_to_lower(question),
+        "long[- ]?run|long[- ]?term"
+      ),
       "Long-Run",
       "Other"
     )
   )
 }
+

@@ -119,10 +119,10 @@ risk_share_area <- function(file_paths_named_list, type = "Upside", infl_col = c
         y = y_label,
         fill = fill_legend
       ) +
-      ggplot2::theme_minimal() +
+      ggplot2::theme_minimal(base_size = 11) +
       ggplot2::theme(
-        text = ggplot2::element_text(family = "Arial", size = 14),
-        plot.title = ggplot2::element_text(face = "bold", hjust = 0.5)
+        text = ggplot2::element_text(size = 11),
+        plot.title = ggplot2::element_text(hjust = 0.5)
       )
 
     return(plotly::ggplotly(p, tooltip = "text"))

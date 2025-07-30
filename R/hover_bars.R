@@ -73,10 +73,9 @@ hover_barplot <- function(data, rel_cols = c(10,12,14), xlab = "", ylab =  "Medi
     textposition = 'none'
   ) %>%
     plotly::layout(
-      yaxis = list(title = ylab, tickfont = list(family = "Arial"), titlefont = list(family = "Arial")),
-      xaxis = list(title = xlab, categoryorder = "array", categoryarray = month_labels, tickfont = list(family = "Arial"), titlefont = list(family = "Arial")),
-      title = list(text = title, font = list(family = "Arial")),
-      font = list(family = "Arial")
+      yaxis = list(title = ylab),
+      xaxis = list(title = xlab, categoryorder = "array", categoryarray = month_labels),
+      title = list(text = title)
     )
 
   fig
