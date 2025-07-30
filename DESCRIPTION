@@ -26,5 +26,10 @@ Imports:
     ggplot2,
     plotly,
     gridExtra,
-    lubridate
-
+    lubridate,
+    ggiraph,
+    gt,
+    modeest,
+    rvest,
+    scales,
+    tidyselect
